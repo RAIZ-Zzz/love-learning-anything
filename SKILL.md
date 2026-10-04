@@ -547,6 +547,15 @@ and 5 in a few sentences, but it still starts from the problem, never from the t
 - Follow the lecture's order and cover every page (plan.md ticks it off).
 - Math in `$...$` / `$$...$$`. Tables for step-by-step numbers and comparisons.
   No invented slide content, no fake citations.
+- **Anything that looks summarisable gets a comparison table.** Whenever the slides present a set
+  of parallel items — a numbered list (7 pillars, 10 benefits, 4 limitations), a family of models
+  or methods (Word2Vec / GloVe / FastText / ELMo / BERT), competing approaches, or before/after
+  pairs — teach the items one by one as usual, then close the set with a table: one row per item;
+  columns = name (note language + English) · what it is, in plain words · what problem it answers
+  or when to use it · an example from the story. Add a column only if it separates the items (e.g.
+  static vs contextual). This applies even when the set is spread across several lessons: the
+  table goes after the last one. In 本讲小结, a set is never collapsed to a list of names in one
+  cell; repeat its table or link to it.
 - **Every formula in its standard typeset form, in notes and in live chat.** Matrices are written
   out as `bmatrix` grids, fractions as `\frac`, roots as `\sqrt`. Never use shorthand or ad-hoc text
   for math, such as `diag(0.25, 0.25)`, `[[1,2],[3,4]]` or `sqrt(x)`. Only code is exempt (code
@@ -767,6 +776,8 @@ overlapping, duplicated content).
 - [ ] (only if the user asked for 6c) evaluator loop ended with `pass` or ≤ 3 rounds
 - [ ] ≥ 10 practice questions that check understanding, not exam tricks (≥ 60% "what does it
       solve / why", ≥ 20% calculation, ≥ 2 connecting two ideas), answers in Show answer folds
+- [ ] Every set of parallel items (numbered lists, model families, competing methods) ends in a
+      comparison table, and 本讲小结 repeats or links each one instead of listing bare names
 - [ ] Glossary table and the Self-check-after-studying tip at the end
 - [ ] Links to previous/next week notes if they exist (`[[WEEK 4]]`)
 - [ ] LaTeX renders: every multi-row `bmatrix`/`cases` separates rows with `\\` (a lone `\`

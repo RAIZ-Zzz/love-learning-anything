@@ -267,6 +267,8 @@ the two, and never write a bare `（补充）` without a citation.
 - **Table:** a table that carries data or a comparison has a bold caption on the line above,
   `**表 14.3 · <title>**`, and always a header row. Layout tables (reading route, glossary) have no
   caption.
+- **Set comparison table:** closes every set of parallel items, captioned
+  `**表 14.3 · <set name> 对比**`, columns `名称（English） | 是什么 | 解决什么 / 何时用 | 例子`.
 - **Equation:** a display equation that is referred to later ends with `\tag{14.3}` and is cited
   as 式 (14.3). Other equations have no number.
 
