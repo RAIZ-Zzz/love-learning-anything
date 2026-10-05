@@ -11,8 +11,9 @@ description: >
   or custom. Use when the user says "/lla" (Love Learning Anything; formerly "/lecture-note"), asks to write / rewrite / complete the notes
   for WEEK n or for a lecture PDF (in any language, e.g. Chinese requests), or names a lecture PDF of
   one of their courses. Also use to teach a section of an existing WEEK note interactively by
-  exercises ("teach me WEEK n section x", "you ask, I answer", "what is this section for").
-  Not for whole-course exam-prep vaults or mastery-tracked quizzing — that is /tutor-setup and /tutor.
+  exercises ("teach me WEEK n section x", "you ask, I answer", "what is this section for"), and to
+  grade a finished checkbox practice quiz and write an error report ("做完了", "check my answers",
+  "what are my weak spots"). Not for whole-course exam-prep vaults or mastery-tracked quizzing — that is /tutor-setup and /tutor.
 argument-hint: "<subject> <note name | vault path> [file to learn] [pages A-B] [--lang zh|en|zh+en|en+zh]"
 ---
 
@@ -222,6 +223,17 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
 - If they drift to another topic and come back, re-post the open question verbatim.
 - At the end, say what they can now do, and record progress (questions done, questions still open)
   so a later session can resume.
+
+**Mode C: review after a practice quiz** (the learner says "做完了" / "I'm done" on a checkbox
+quiz note, or asks for an error report / weak spots). Follow `references/review-report.md`:
+1. Grade with `scripts/grade_quiz.py`, and report unanswered or multi-ticked questions first.
+2. Sort the errors by type: default guess, swapped pair, name lure, test-taking rule, then
+   content gap.
+3. Write a report the learner can study from alone: at a glance, one rule per error habit, one
+   master contrast table built from the answer key, test-taking rules, and a self-test of every
+   wrong question with folded answers.
+
+The aim is the fewest rules that fix the most errors, not another summary of the course.
 
 ## Setup (nothing machine-specific lives in this file)
 

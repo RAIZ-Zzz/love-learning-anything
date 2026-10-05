@@ -208,7 +208,8 @@ Notes go to `Lecture Notes/<course>/` inside the vault; create one folder per co
 ### Use
 
 `/lla <subject> <note name | vault path> [file to learn] [pages A-B] [--lang zh|en|zh+en|en+zh]`, or ask it to
-teach a section of an existing note.
+teach a section of an existing note. After a practice quiz, tick your answers in Obsidian and say
+"done": it grades the quiz and writes an error report built around your recurring wrong guesses.
 
 ## Under the hood
 
@@ -218,6 +219,8 @@ teach a section of an existing note.
 | `references/learning-design.md` | Why the notes teach this way: principles, session notes, references |
 | `references/note-template.md` | Frontmatter and section skeleton of a note |
 | `references/evaluator.md` | Prompt for the optional strict-review loop |
+| `references/review-report.md` | Review mode: grading a practice quiz, sorting errors by type, and the error-report skeleton, with the evidence behind it |
+| `scripts/grade_quiz.py` | Grades a checkbox quiz note: unanswered and multi-ticked questions first, then the score, wrong answers and repeated wrong guesses |
 | `scripts/prep_slides.py` | PDF → text with page markers, overview contact sheets and slide screenshots (PyMuPDF) |
 | `scripts/svg_anim.py` | `Scene` helper that builds animated SVGs from computed data; `lint` checks Obsidian compatibility; `frames` renders chosen moments with headless Chrome/Edge for visual review |
 | `scripts/mindmap.py` | Optional course mind map: an outline with `@week\|heading@` link tokens becomes an inline `markmap` note; every heading link is checked |
