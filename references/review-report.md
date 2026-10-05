@@ -62,22 +62,30 @@ idea per sentence, tables only for parallel items.
 1. **At a glance** (`> [!abstract]`): the score, how many errors share one type, the learner's
    default guesses by name, and the one or two things to do, in ≤ 3 sentences. Then a small
    per-section score table.
-2. **Error habits, one per default guess or swapped pair.** One sentence naming the habit and
-   the questions it cost, then an `> [!important]` box with a short mnemonic rule
-   ("Penn Treebank for the three syntactic tasks; OntoNotes only for anaphora and metaphor").
-   State when the guessed option *is* right ("K-means is right only for unsupervised WSD").
-3. **One master contrast table** for the confusable family: one row per item (task, model,
+2. **First, what each tool is for.** Before any habit or table, explain every option family the
+   errors involve (datasets, algorithms, resources) in plain words: what it *is* and what it
+   *contains or does*. Then the pairing follows by reasoning instead of memory. Give the one or
+   two principles that generate all the pairings ("a dataset goes with the task whose labels it
+   contains"; "an algorithm goes with the task of the same shape: tag each word → HMM/CRF,
+   classify a whole text → SVM, no labels → K-means/LDA"). End with one Pause question that
+   needs the reasoning.
+3. **Error habits, one per default guess or swapped pair.** One sentence naming the habit and
+   the questions it cost, then the correction phrased as the question to ask yourself ("does
+   this task have labelled data? then not K-means"), built on part 2. State when the guessed
+   option *is* right ("K-means is right only for unsupervised WSD").
+4. **One master contrast table** for the confusable family: one row per item (task, model,
    concept), columns for what the questions ask about (dataset, model, related task, metric…),
    cells from the answer key, ★ on cells the learner missed. This is the side-by-side contrast
    the discrimination evidence points to.
-4. **Test-taking rules** that work without the content: answer patterns per question type,
+5. **Test-taking rules** that work without the content: answer patterns per question type,
    distractor families to rule out, aliases.
-5. **Name-lure table** for definition errors: term · correct definition (keyword in bold) · the
+6. **Name-lure table** for definition errors: term · correct definition (keyword in bold) · the
    lure the learner chose and the word that lured them.
-6. **Self-test:** every wrong question, in original (mixed) order, as
-   `> [!question]- Qn · <short stem>` with the answer and a one-line reason inside. Mixed order
+7. **Self-test:** every wrong question, in original (mixed) order, as
+   `> [!question]- Qn · <short stem>` with the answer and a one-line reason inside that goes
+   back to what the tool is for (part 2), not to a mnemonic. Mixed order
    on purpose: it makes the learner discriminate.
-7. **Check standard** (`> [!tip]`): cover the table's answer columns and recite them, then redo
+8. **Check standard** (`> [!tip]`): cover the table's answer columns and recite them, then redo
    the self-test, aiming for 100%.
 
 Keep it to what the errors need. A report that repeats the whole course is just another note to
@@ -102,3 +110,9 @@ dataset / model / related task goes with this task", and three wrong options had
 4 times: OntoNotes, K-means, POS tagging. An earlier per-chapter list of errors had hidden that
 pattern. Grouping by default guess turned 12 errors into three one-line rules. The report built
 this way (`AI6127 错题报告.md`) is the model for the skeleton above.
+
+Later the same day the learner read the report and said: memorising these pairings does not stick,
+"I should know what these datasets and algorithms are for". The report's mnemonic boxes ("OntoNotes only
+for anaphora and metaphor") were rote rules with no reason attached. The report was rewritten to
+open with what each dataset contains and what shape of task each algorithm fits, from which every
+pairing can be derived. That is now part 2 of the skeleton.

@@ -229,9 +229,14 @@ quiz note, or asks for an error report / weak spots). Follow `references/review-
 1. Grade with `scripts/grade_quiz.py`, and report unanswered or multi-ticked questions first.
 2. Sort the errors by type: default guess, swapped pair, name lure, test-taking rule, then
    content gap.
-3. Write a report the learner can study from alone: at a glance, one rule per error habit, one
-   master contrast table built from the answer key, test-taking rules, and a self-test of every
-   wrong question with folded answers.
+3. Write a report the learner can study from alone:
+   - at a glance;
+   - **what each confused tool is for**, so the pairings can be reasoned out, not memorised;
+   - one correction per error habit;
+   - one master contrast table built from the answer key;
+   - test-taking rules;
+   - a self-test of every wrong question, with folded answers whose reasons go back to what the
+     tool is for.
 
 The aim is the fewest rules that fix the most errors, not another summary of the course.
 
