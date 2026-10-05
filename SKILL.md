@@ -57,6 +57,28 @@ research behind each rule: anchored instruction, productive failure, meaningful 
 (not minimal-guidance) discovery, and evidence on AI tutors. Read it before changing any rule in
 this section.
 
+**Gist first: cut it down before building it up.** This rule comes before everything below. A
+beginner who does not yet know *what a thing does* cannot use a question chain or a hand
+calculation: they answer by guessing, because they do not know what the numbers are for. So
+before any problem, story question, table or term, the reader gets the **gist**:
+- **What it does, as one familiar example going in and coming out.** For example, MetaPro takes
+  *She devoured his novel*, finds that "devoured" is not literal, rewrites it as *She enjoyed his
+  novel*, and names the pattern PLEASURE IS BODILY_PROCESS.
+- **Why anyone wants that**, in one sentence.
+- **At most three plain sentences and at most one term.** No numbers that need explaining, no
+  lists of parts, no questions.
+
+The test: after 30 seconds, could the reader tell a friend what this lecture (part, lesson) is
+about? If not, the gist is too long or too abstract. Cut it, do not add to it.
+
+The gist sits at three levels: the note's **At a glance** block (before anything else), the first
+lines of each `##` part, and the first sentence of each `###` lesson. Detail that does not change
+the gist (lists of datasets, numbers from studies, every variant) goes into tables, folds or the
+cram section, never into the gist. Hand calculations and question chains come *after* the gist.
+Their job is to deepen and check an idea the reader can already state, not to introduce it.
+Where possible, take the gist's example and the order of ideas from a well-made explainer video
+(workflow step 2b): good human teachers have already found the shortest path into the topic.
+
 **One running scenario per topic, from start to end.** A topic that spans several lessons (e.g.
 BatchNorm: why normalize → γ/β → small batches → inference → other norms) is taught through **one**
 story that every lesson continues, e.g. a cat classifier whose layer 1 outputs 2, 4, 6, 8 on four
@@ -196,6 +218,9 @@ answer plus a one-line takeaway, and the prose between them carries the reader f
 **Mode B: explaining an existing note interactively** (the user wants to learn or review a section,
 or says "you ask, I answer"). Read the section first. No slide prep and no publishing are needed.
 Talk in the user's language, whatever the note's language is. Walk the arc live:
+- Open with the gist (see "Gist first"): one familiar example going in and coming out, and why it
+  matters, in a few plain sentences. Start questions only after the user can say what the thing
+  does. When the user says they are lost, go back to the gist, never to a shorter overview.
 - At the start of a new multi-lesson topic, let the user choose the running story (2–3 candidates
   via AskUserQuestion, one recommended, "Other" for their own). If the lesson has a slide figure
   that is the concept, show it early and ask on it.
@@ -299,8 +324,37 @@ python <skill>/scripts/prep_slides.py prep "<pdf>" "<work>" [--pages A-B]
 - Build a page → topic outline. Every page must land in some section; note pages that are pure
   title/agenda/references.
 
+### 2b. Borrow the teaching path from explainer videos (default; skip if none found)
+Good teachers have already found the shortest way into most topics, and the slides rarely show
+it. Before planning, find out how they open the topic:
+1. WebSearch for 1–3 explainer videos on the lecture's core topic, e.g. `<topic> explained`.
+   Prefer widely watched ones from recognised channels and lecturers. Search in English first.
+2. Fetch each transcript:
+   ```bash
+   python <skill>/scripts/video_transcript.py "<youtube url or id>" "<work>/videos/<slug>.txt"
+   ```
+   If a video has no captions the script says so; pick another. If none work, note it in
+   `plan.md` and plan from the slides alone.
+3. Distill each transcript into `plan.md`, a few lines per video:
+   - **Hook:** the first familiar example the teacher uses.
+   - **Essence:** the one sentence that states what the idea is.
+   - **Order:** which ideas come in which order.
+   - **Skipped:** what the teacher leaves out at first.
+   - **Analogies.**
+4. Use them for the gist and the order of lessons, but keep the slides' content and coverage.
+   Cite each video you draw on in References (channel or speaker, year, title, URL), and never
+   copy long passages.
+
+For example, two explainers on conceptual metaphor both opened with one familiar line ("a summer's
+day", "a soft laugh"). They then gave the essence in one sentence ("understanding one kind of thing
+in terms of another"), then a family of similar examples, and only then the terms. Neither one
+did any calculation.
+
 ### 3. Plan the teaching path (before writing a single paragraph)
 Write `<work>/plan.md`:
+0. **Gist** — the lecture's gist, and each part's: one familiar example in → out, and why it
+   matters (see "Gist first"). Write these first. If you cannot, you do not yet understand the
+   lecture well enough to teach it.
 1. **Learning ladder** — list the lecture's concepts and order them so each one needs only
    the ones above it. Follow the lecture order, except when the slides use an idea before
    explaining it: then teach the prerequisite first (a short step) and say so.
@@ -468,7 +522,10 @@ Follow `references/note-template.md` for frontmatter, skeleton and labels, and t
 
 #### The lesson unit (every `###` knowledge point follows the arc)
 1. **The problem** — what goes wrong without it; plain words; numbers explained before use.
-2. **Discover it yourself** — the scenario and its Question k folds; short prose between them.
+2. **Discover it yourself** — no heading or bold label in the note (a "Work it out yourself" label
+   reads as stiff). The problem paragraph ends in one bridging sentence that moves the story into
+   the new situation and hands the reader the first question; then the Question k folds, with short
+   prose between them.
 3. **The concept from the slides** — name (note language + English), definition, formula with
    every symbol mapped to the numbers from step 2; then **In professional terms** (how a
    practitioner says it, note language + English).
@@ -485,6 +542,28 @@ and 5 in a few sentences, but it still starts from the problem, never from the t
 - **Explain, do not summarise.** Write connected explanatory prose — "first…, then…, so…" — as a
   teacher speaking. Bullet lists are for enumerating steps or options *after* they have been
   explained, never as the way to introduce new ideas. No paragraphs that list 3+ new terms.
+- **The concept block: the slide's main point, then the slide's details.** Step 3 of the arc is
+  where notes most often turn into a heap. Typical causes: a slide page cited in every sentence,
+  a new example for every sub-point, and five facts packed into one bullet. Build it like
+  well-known explainers do (Alammar's *Illustrated Transformer*, the Hugging Face course's
+  "Behind the pipeline"):
+  1. **Black box first.** One line with the example going in and the result coming out, before
+     any part is named.
+  2. **One example through every step.** When the slides use a different example for each
+     sub-point, the main line keeps one; the others go to the detail fold.
+  3. **Show each step's output.** For a process, a table with one row per step: step · what it
+     does (≤ 10 words) · its output on the example. Then one short paragraph per step: what it
+     does, then why, at most 3 sentences.
+  4. **One idea per sentence** [Google Technical Writing]. A sentence that joins two facts with
+     "and" or a semicolon becomes two sentences, or a list.
+  5. **Pages once.** Cite slide pages in the heading, the table caption or the fold, not after
+     every sentence.
+  6. **Details in one fold.** Every slide point that does not change the main picture
+     (granularity, variants, special cases, other examples) goes into one
+     `> [!note]- 深入：…` fold. That keeps coverage complete without putting it in the main line.
+  The test: cover the fold and read the main line alone. Can the reader say what each step does
+  to the example? If a sentence carries something that is not needed for that, move it to the
+  fold.
 - **Fluent is not understood: write the causal chain out in full.** AI-written explanations read
   as clear yet leave readers confused. Readers rate them as clear as human text but understand
   them worse [Guo et al., 2025]. Three causes, each with a rule; they apply to notes **and live
@@ -739,6 +818,11 @@ overlapping, duplicated content).
 - [ ] Every abstract concept has an analogy and/or tiny calculation next to it
 - [ ] Every lesson walks the arc: problem → self-discovery questions → slide concept → analysis,
       connections and uses → pros/cons that lead into the next lesson; transitions read smoothly
+- [ ] The note opens with an At a glance block; it and each part's first lines give the gist (one
+      familiar example in → out, why it matters, ≤ 3 sentences, ≤ 1 term) before any question,
+      table or calculation; details that do not change the gist are in tables, folds or the cram section
+- [ ] Explainer videos were searched (2b); the ones used are distilled in `plan.md` and cited, or
+      `plan.md` says none were usable
 - [ ] No section opens with a term, definition, formula or bare numbers
 - [ ] The user chose each multi-lesson topic's running story (2–3 candidates offered); slide
       figures that are the concept come in early, are read for the reader and carry questions
@@ -747,6 +831,8 @@ overlapping, duplicated content).
       role silently; each chain ends with result → consequence → conclusion
 - [ ] Every lesson ends its concept block with In professional terms; plain explanations are
       short, precise and correct
+- [ ] Concept blocks: black box first, one example through every step, outputs shown, one idea per
+      sentence, pages cited once, and the details that do not change the main picture in one 深入 fold
 - [ ] Uniform shape: every `###` lesson has the same blocks in the same order, similar length and
       3–5 questions; no sprawling or two-line lessons
 - [ ] Points whose teaching path was unclear were checked against how recognised teachers explain

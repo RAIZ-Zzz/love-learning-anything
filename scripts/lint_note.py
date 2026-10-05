@@ -126,6 +126,8 @@ def main():
             issues.append(f"{i}: the text points at the picture on p.{n}; embed its screenshot (…-s{n:02d}.png)")
     if cited and not entries:
         issues.append("citations used but no '## 参考文献' / '## References' section")
+    if not re.search(r"^> \[!abstract\][-+]? (一眼看懂|At a glance)", text, re.M):
+        issues.append("no '> [!abstract] 一眼看懂' / 'At a glance' gist block before the first part")
 
     sys.stdout.reconfigure(encoding="utf-8")
     if issues:

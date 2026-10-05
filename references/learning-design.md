@@ -29,6 +29,9 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   "the whole dataset" in the next, and the switch was never stated. The learner was lost. A
   separate "purpose / mapping" box bolted onto each example was then judged too rigid. What worked
   was letting the story carry the purpose.
+- **Session note (2026-10-05):** for the same reason, the learner asked to drop the bold
+  "自己动手推一推 / Work it out yourself" label between the problem and the question chain. It
+  reads as stiff. A bridging sentence inside the story now hands over the first question instead.
 
 ### 2. Apply old knowledge → see it fail → introduce the new idea (productive failure)
 - **Rule:** in step 2 of the arc, the reader tries what they already know on the new situation
@@ -187,8 +190,43 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   showed one scenario, real numbers and a single chain: gradient ≈ 10⁻⁷ → w₁ cannot learn → the
   cat–dog gap is squashed → both images output 0.5 → the loss sticks at 0.5.
 
+### 15. Gist first: cut it down before building it up
+- **Rule:** before any problem, question chain, table or term, give the gist: what the thing does,
+  as one familiar example going in and coming out, plus why anyone wants that. Use at most three
+  plain sentences and one term. Put it at the top of the note, of each part and of each lesson.
+  Hand calculations come afterwards, to deepen and check the idea. Borrow the opening example and
+  the order of ideas from good explainer videos where they exist.
+- **Why:** a short, general introduction given *before* new material helps people learn and
+  remember it, because it gives the details something to attach to. Ausubel (1960) called this an
+  advance organizer. Without it, every detail has to be held in working memory unconnected, and
+  working memory is small. Problem solving before the learner has a frame uses the capacity that
+  should go to building one (Sweller, 1988). That is why a question chain fails when the reader
+  does not yet know what the numbers are for: they guess.
+- **Session note (2026-10-05):** the learner read the guest-lecture note on Metaphorical Cognition
+  (6 lessons, 2 questions each, tables of study numbers) and could not say what MetaPro does. Then
+  one paragraph that started from L4's *She devoured his novel* and gave the in → out of MetaPro
+  made it clear at once. The learner's verdict: the hand calculations are useful, but only after
+  you know what the thing is about; before that you answer them blind. Two explainer videos on
+  conceptual metaphor, read through their transcripts, followed the same path: one familiar line,
+  the essence in one sentence, a family of examples, terms last, no calculation.
+- **Session note (2026-10-05, later):** the learner then pointed at the MetaPro concept block
+  itself as "乱糟糟" ("a mess"). It had a page number in nearly every sentence. It used three
+  different example sentences for three stages. One bullet packed definition, example,
+  granularity and variants together. The rewrite followed how widely read explainers teach a
+  pipeline:
+  - Alammar's *Illustrated Transformer* starts from a black box and zooms in.
+  - The Hugging Face course follows one example through every step and shows each output.
+  - Google's technical-writing course asks for one idea per sentence.
+
+  So the rewrite opened with one black-box line, then a three-row table with one sentence going
+  through all three stages, then one short paragraph per stage. The slide details went into a
+  single fold. This became the SKILL.md rule "The concept block".
+
 ## References
 
+- Alammar, J. (2018). The Illustrated Transformer. https://jalammar.github.io/illustrated-transformer/
+- Ausubel, D. P. (1960). The use of advance organizers in the learning and retention of meaningful
+  verbal material. *Journal of Educational Psychology*, 51(5), 267–272. https://doi.org/10.1037/h0046669
 - Ausubel, D. P. (1968). *Educational Psychology: A Cognitive View*. Holt, Rinehart & Winston.
 - Barton, C. (2018). *How I Wish I'd Taught Maths*. John Catt Educational.
 - Bastani, H., Bastani, O., Sungu, A., Ge, H., Kabakcı, Ö., & Mariman, R. (2025). Generative AI
@@ -222,9 +260,11 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   (2014). Active learning increases student performance in science, engineering, and mathematics.
   *PNAS*, 111(23), 8410–8415. https://doi.org/10.1073/pnas.1319030111
 - Freire, P. (1970). *Pedagogy of the Oppressed*. Herder and Herder.
+- Google for Developers (n.d.). Technical Writing One: Short sentences. https://developers.google.com/tech-writing/one/short-sentences
 - Guo, Y., Sohn, J. H., Leroy, G., & Cohen, T. (2025). Are LLM-generated plain language summaries
   truly understandable? A large-scale crowdsourced evaluation. arXiv:2505.10409.
   https://arxiv.org/abs/2505.10409
+- Hugging Face (n.d.). LLM Course, Chapter 2: Behind the pipeline. https://huggingface.co/learn/llm-course/chapter2/2
 - Kalyuga, S., Ayres, P., Chandler, P., & Sweller, J. (2003). The expertise reversal effect.
   *Educational Psychologist*, 38(1), 23–31.
 - Kapur, M. (2008). Productive failure. *Cognition and Instruction*, 26(3), 379–424.

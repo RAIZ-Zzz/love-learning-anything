@@ -38,6 +38,13 @@ tags:
 | [[#Part 1 · <…>]] | p.A–p.X | <one real question> |
 | … | … | … |
 
+> [!abstract] At a glance
+> <The gist in ≤ 3 plain sentences, ≤ 1 term: what this lecture's main thing does, shown as one
+> familiar example going in and coming out, and why anyone wants that. E.g. "MetaPro reads
+> *She devoured his novel*, spots that 'devoured' is not literal, rewrites it as *She enjoyed his
+> novel*, and names the pattern PLEASURE IS BODILY_PROCESS. Collect many such patterns from someone's
+> writing and you can see how they think.">
+
 ## Before we start: what problem this lecture solves
 
 <One running scenario with 2–3 numbers: where we are stuck and what this lecture gives us.
@@ -51,9 +58,10 @@ Tell it as a story, not a list.>
 <Plain words: what goes wrong without this idea, as a concrete failure. Say where every number
 comes from and what it means. No term, definition or formula yet.>
 
-**Work it out yourself**
-<Move the topic's running scenario into this lesson's new situation, let the reader apply what
-they already learned, show it fail inside the story, then guide them to the fix:>
+<No label here. The last sentence of "Why we need it" moves the topic's running scenario into this
+lesson's new situation and hands the reader the first question in plain words, e.g. "Now the GPU
+only fits 2 of the 4 images. What mean does BN compute? Try it before opening the fold." Then the
+reader applies what they already learned, watches it fail inside the story, and is guided to the fix:>
 
 > [!question]- Question 1: <count / observe something on a tiny case>
 > <answer> — <one-line takeaway>
@@ -156,10 +164,10 @@ language follows whichever column is closer, or asks the user.
 | --- | --- |
 | Course & scope | 课程与范围 |
 | Reading route (easy → hard) · Slides · After it you can answer | 阅读路线（从易到难） · 课件页 · 学完能回答 |
+| At a glance | 一眼看懂 |
 | Before we start: what problem this lecture solves | 开始之前：这一讲要解决什么问题 |
 | Part 1 · … / Part N · Review and practice | 第一部分 · … / 第 N 部分 · 复习与练习 |
 | Why we need it | 为什么需要它 |
-| Work it out yourself | 自己动手推一推 |
 | Question k: … | 第 k 题：… |
 | The concept from the slides | 课件里的概念 |
 | In professional terms | 专业说法 |
