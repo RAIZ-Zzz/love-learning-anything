@@ -83,7 +83,8 @@ def main():
     if args.baseline:
         if not exists:
             fail(f"{vault_path} does not exist; use --new")
-        if current["content"] not in (Path(args.baseline).read_text(encoding="utf-8"), body):
+        lf = lambda s: s.replace("\r\n", "\n")  # read_text() already turns CRLF into LF
+        if lf(current["content"]) not in (lf(Path(args.baseline).read_text(encoding="utf-8")), lf(body)):
             fail(f"{vault_path} changed since the baseline was saved; re-read and merge first")
 
     plan = []
