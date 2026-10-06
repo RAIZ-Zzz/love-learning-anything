@@ -222,6 +222,41 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   through all three stages, then one short paragraph per stage. The slide details went into a
   single fold. This became the SKILL.md rule "The concept block".
 
+### 16. A restatement must be checkable: closed book, key links, one prediction
+- **Rule:** a restate check (principle 14) has three parts. The learner explains **without looking
+  back**. The answer is graded against **3–4 key links** fixed in advance, each either present or
+  not. Then one **prediction question** on a new case with a single right answer. In live chat I
+  grade the links; in a note, the Pause fold holds the links as checkboxes and the prediction with
+  a folded answer, so a reader alone can grade themselves.
+- **Why:** a free restatement is hard to grade. A fluent answer can hide a missing link, and the
+  grader, human or model, is pulled by fluency just as the reader is (principle 14).
+  - **Closed book.** Teaching improved the teacher's later test scores only when it was done without
+    notes; teaching from notes did no better than the control, and plain retrieval did as well as
+    teaching (Koh, Lee & Lim, 2018). Whether the gain is *only* retrieval is still debated
+    (Kobayashi, 2022), but the closed-book condition is the safe default.
+  - **Explaining is the active part.** Prompted self-explanation pools at g = .55 over 69 effect
+    sizes (Bisra et al., 2018). Teaching after studying with the expectation of teaching gives
+    g = .48, and without that expectation g = −.02 (Kobayashi, 2024). So the gain comes from the
+    learner generating the explanation, not from having an audience. That is why a note can use
+    it with no listener.
+  - **Key links.** Explaining lowers people's inflated ratings of their own understanding, but only
+    partly. More gaps show once they compare their answer with a full expert explanation
+    (Rozenblit & Keil, 2002). The key-link list is that comparison, cut down to the parts that
+    decide right or wrong.
+  - **Prediction.** Users who read understandable explanations of an AI model felt they
+    understood it, yet did poorly when asked to predict its output on new cases (Chromik et al.,
+    2021). Explaining a *specific* new case exposes gaps that a general explanation hides
+    (Rozenblit & Keil, 2002). A prediction has one right answer, so it can be graded without
+    judging prose.
+- **Session note (2026-10-07):** after x·sin(1/x) the learner restated differentiability as "plug
+  in an h near the point, take the slope to 0; if it can be found, the limit exists". It read as
+  right, and it held three wrong or missing links. It said "the limit exists" where it should say
+  "differentiable". It did not require both sides to give the same finite number. And it did not
+  say the slope must go to f(0), not to the limit. These were caught only because the links were
+  checked one by one. The learner then asked how a restatement can be checked at all, and whether
+  they would have to ask me every time. The skill's restate check lived only in Mode B and had no
+  grading standard. This principle answers both.
+
 ## References
 
 - Alammar, J. (2018). The Illustrated Transformer. https://jalammar.github.io/illustrated-transformer/
@@ -232,12 +267,18 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 - Bastani, H., Bastani, O., Sungu, A., Ge, H., Kabakcı, Ö., & Mariman, R. (2025). Generative AI
   without guardrails can harm learning: Evidence from high school mathematics. *PNAS*, 122(26),
   e2422633122. https://doi.org/10.1073/pnas.2422633122
+- Bisra, K., Liu, Q., Nesbit, J. C., Salimi, F., & Winne, P. H. (2018). Inducing self-explanation:
+  A meta-analysis. *Educational Psychology Review*, 30(3), 703–725.
+  https://doi.org/10.1007/s10648-018-9434-x
 - Bjork, R. A. (1994). Memory and metamemory considerations in the training of human beings. In J.
   Metcalfe & A. Shimamura (Eds.), *Metacognition: Knowing about knowing* (pp. 185–205). MIT Press.
 - Bloom, B. S. (1984). The 2 sigma problem: The search for methods of group instruction as effective
   as one-to-one tutoring. *Educational Researcher*, 13(6), 4–16.
 - Catrambone, R. (1998). The subgoal learning model: Creating better examples so that students can
   solve novel problems. *Journal of Experimental Psychology: General*, 127(4), 355–376.
+- Chromik, M., Eiband, M., Buchner, F., Krüger, A., & Butz, A. (2021). I think I get your point,
+  AI! The illusion of explanatory depth in explainable AI. *Proceedings of IUI '21*, 307–317.
+  https://doi.org/10.1145/3397481.3450644
 - Cognition and Technology Group at Vanderbilt (1990). Anchored instruction and its relationship to
   situated cognition. *Educational Researcher*, 19(6), 2–10.
 - Cognition and Technology Group at Vanderbilt (1992). The Jasper series as an example of anchored
@@ -275,6 +316,15 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   educational setting. *Scientific Reports*, 15, 17458. https://doi.org/10.1038/s41598-025-97652-6
 - Kirschner, P. A., Sweller, J., & Clark, R. E. (2006). Why minimal guidance during instruction does
   not work. *Educational Psychologist*, 41(2), 75–86.
+- Kobayashi, K. (2022). The retrieval practice hypothesis in research on learning by teaching:
+  Current status and challenges. *Frontiers in Psychology*, 13, 842668.
+  https://doi.org/10.3389/fpsyg.2022.842668
+- Kobayashi, K. (2024). Interactive learning effects of preparing to teach and teaching: A
+  meta-analytic approach. *Educational Psychology Review*, 36.
+  https://doi.org/10.1007/s10648-024-09871-4
+- Koh, A. W. L., Lee, S. C., & Lim, S. W. H. (2018). The learning benefits of teaching: A retrieval
+  practice hypothesis. *Applied Cognitive Psychology*, 32(3), 401–410.
+  https://doi.org/10.1002/acp.3410
 - Margulieux, L. E., Guzdial, M., & Catrambone, R. (2012). Subgoal-labeled instructional material
   improves performance and transfer in learning to develop mobile applications. *Proceedings of
   ICER '12*, 71–78.
@@ -286,6 +336,9 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 - Renkl, A., & Atkinson, R. K. (2003). Structuring the transition from example study to problem
   solving in cognitive skill acquisition: A cognitive load perspective. *Educational
   Psychologist*, 38(1), 15–22.
+- Rozenblit, L., & Keil, F. (2002). The misunderstood limits of folk science: An illusion of
+  explanatory depth. *Cognitive Science*, 26(5), 521–562.
+  https://doi.org/10.1016/S0364-0213(02)00078-2
 - Sinha, T., & Kapur, M. (2021). When problem solving followed by instruction works: Evidence for
   productive failure. *Review of Educational Research*, 91(5), 761–798.
   https://doi.org/10.3102/00346543211019105

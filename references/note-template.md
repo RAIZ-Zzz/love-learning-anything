@@ -119,8 +119,17 @@ next lesson's problem.>
 
 ### 1.2 <next concept> … (same arc; its "Why we need it" grows out of 1.1's pros and cons)
 
-> [!question]- Pause: <one question checking this part's core idea>
-> <answer + one or two sentences of explanation>
+> [!question]- Pause: <the part's causal chain as one why-question>
+> Answer in your own words **without scrolling back**, out loud or on paper. Then open the checks.
+>
+> > [!success]- Key links: your answer should contain
+> > - [ ] <link 1: one fact that is either in the answer or not>
+> > - [ ] <link 2>
+> > - [ ] <link 3>
+>
+> > [!question]- Predict: <a new case, not used above, with a single right answer>
+> > > [!success]- Show answer
+> > > <answer + which key link it tests>
 
 … (continue part by part in slide order) …
 
@@ -192,6 +201,7 @@ language follows whichever column is closer, or asks the user.
 | Cause and effect | 前因后果 |
 | Common pitfall | 易错点 |
 | Pause: … | 停一下：… |
+| Key links: your answer should contain · Predict: … | 关键环节：你的回答应该包含 · 预测：… |
 | Summary | 本讲小结 |
 | Exercises · Exercise k · Show answer | 练习 · 练习 k · 展开答案 |
 | Glossary | 术语中英对照 |

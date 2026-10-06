@@ -108,6 +108,7 @@ The design isn't taste. Each rule follows a research result:
 | Every question must catch a real misconception | **Hinge questions**: a question is worth asking only if someone who has not understood would get it wrong (Wiliam, 2011; Barton, 2018) |
 | Explanation depth follows *your* level | **Subgoal labels** (Catrambone, 1998), **faded worked examples** (Renkl & Atkinson, 2003); detail that helps a novice hinders an expert (**expertise reversal**, Kalyuga et al., 2003) |
 | New ideas are taught as one causal chain in sentences, not as tables of terms; you check by restating it | AI text is rated as clear as human text but understood worse (Guo et al., 2025). Low-knowledge readers need every link spelled out (McNamara et al., 1996). Jargon makes explanations feel satisfying while lowering understanding, and explaining first breaks the illusion (Cruz & Lombrozo, *Nat. Hum. Behav.* 2025) |
+| The restatement is checkable even when you study alone: answer without looking back, tick 3–4 key links, then predict one new case | Teaching helped only when done without notes (Koh et al., 2018); prompted self-explanation g = .55 (Bisra et al., 2018), so no audience is needed. Explaining exposes only part of the gaps until compared with a full answer (**illusion of explanatory depth**, Rozenblit & Keil, 2002); people who feel they understand still fail to predict new cases (Chromik et al., 2021) |
 
 Full reasoning, the session notes that shaped each rule, and 31 references are in
 [`references/learning-design.md`](references/learning-design.md).

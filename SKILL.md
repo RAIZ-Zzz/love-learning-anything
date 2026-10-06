@@ -241,7 +241,15 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
 - **Check by restating, not by asking "got it?".** After an explanation, ask the user to say the
   causal chain in their own words ("why does the 10-layer net output 0.5 for both?"). Trying to
   explain first is what breaks the feeling of understanding that fluent text gives
-  [Cruz & Lombrozo, 2025]. Correct the specific missing link, not the whole explanation.
+  [Cruz & Lombrozo, 2025]. Make the restatement checkable (learning-design principle 16):
+  - Ask for it **closed-book**: without scrolling back to the explanation.
+  - Before asking, fix the **3–4 key links** the chain must contain, each one right or wrong
+    (e.g. "f(0) comes from the piece that contains 0"). Grade link by link: name each link that
+    was there, then each one missing or wrong. A fluent answer with a missing link is not a pass.
+  - Then ask **one prediction question**: a new case, not used in the explanation, with a single
+    right answer (after x·sin(1/x): "is x³·sin(1/x) differentiable at 0?"). A good restatement
+    with a wrong prediction means a link is missing; find which one.
+  Correct the specific missing link, not the whole explanation.
 - After the chain, do steps 3–5 in prose, then offer the next knowledge point.
 - Do long arithmetic yourself (run it); never ask them to multiply decimals.
 - If they drift to another topic and come back, re-post the open question verbatim.
@@ -590,9 +598,16 @@ and 5 in a few sentences, but it still starts from the problem, never from the t
   must mention a later concept, give a one-line plain explanation and point forward ("Softmax
   (section 3 explains it): exponentiate each number, then divide by the total"). Never use a term
   before it is explained.
-- **Small steps + pause.** After each part (and after any lesson that was hard), add a short
-  `> [!question]-` Pause fold with one question and the answer inside, so the reader checks one
-  idea before the next arrives.
+- **Small steps + pause.** After each part (and after any lesson that was hard), add a
+  `> [!question]-` Pause fold, so the reader checks one idea before the next arrives. A reader
+  alone has nobody to grade a free restatement, so the fold makes it self-checkable (format in
+  `references/note-template.md`; why in learning-design principle 16):
+  - its title asks for the part's causal chain as one why-question, to answer **without looking
+    back**;
+  - a nested fold lists the **3–4 key links** the answer must contain, as checkboxes, each one
+    right or wrong;
+  - a second nested fold asks **one prediction question** on a new case with a single right
+    answer, and nests that answer.
 - **Analogy or tiny example, never neither, for abstract ideas.** If a sentence contains an
   abstract word (gradient, curvature, variance, regularisation, momentum, eigenvalue…) and neither
   an analogy nor numbers are nearby, add one.
@@ -845,7 +860,8 @@ overlapping, duplicated content).
 - [ ] Every knowledge point and piece of content on the slides appears somewhere
 - [ ] No summary-style lesson (a bullet list introducing several new terms); ≤ 2 new terms per `###`
 - [ ] Hard extras are in Deep dive folds; skipping all folds still leaves a complete explanation
-- [ ] A Pause check after each part
+- [ ] A Pause check after each part: a closed-book why-question, a fold of 3–4 checkable key
+      links, and one prediction question on a new case with a single right answer
 - [ ] Every screenshot / animation embed has a "what to look at" line and the file exists;
       every animation passed `svg_anim.py lint`, its frame strip was looked at, and it has a
       static fallback (table/list of the same numbers)
