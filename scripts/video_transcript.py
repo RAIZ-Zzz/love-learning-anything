@@ -80,14 +80,12 @@ def speech_to_text(url, a):
     import numpy as np
     import ctranslate2
     gpu = ctranslate2.get_cuda_device_count() > 0
-    for p in ("nvidia.cublas", "nvidia.cudnn"):  # CUDA 12 DLLs shipped as pip wheels
-        spec = importlib.util.find_spec(p) if gpu else None
-        if not spec:
-            gpu = False
-            break
-        d = os.path.join(list(spec.submodule_search_locations)[0], "bin")
-        os.add_dll_directory(d)
-        os.environ["PATH"] = d + os.pathsep + os.environ["PATH"]
+    if gpu and os.name == "nt":  # CUDA 12 DLLs: a folder on PATH, or the nvidia-cublas-cu12 / nvidia-cudnn-cu12 wheels
+        for p in ("nvidia.cublas", "nvidia.cudnn"):
+            spec = importlib.util.find_spec("nvidia") and importlib.util.find_spec(p)
+            if spec:
+                os.environ["PATH"] = os.path.join(list(spec.submodule_search_locations)[0], "bin") + os.pathsep + os.environ["PATH"]
+        gpu = any(os.path.isfile(os.path.join(d, "cublas64_12.dll")) for d in os.environ["PATH"].split(os.pathsep))
     from faster_whisper import WhisperModel
 
     with tempfile.TemporaryDirectory() as d:
