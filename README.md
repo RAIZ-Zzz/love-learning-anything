@@ -205,8 +205,17 @@ Notes go to `Lecture Notes/<course>/` inside the vault; create one folder per co
   live on this machine. It is git-ignored. Without it, the skill asks for the PDF path and offers
   to create the file.
 - The Obsidian plugin **Mindmap NextGen**, only for the optional course mind map.
-- `pip install youtube-transcript-api` (no API key), so the skill can read explainer videos'
-  captions and borrow their teaching path. Without it, that step is skipped.
+- Explainer-video transcripts, so the skill can borrow how good teachers open a topic. Without
+  them, that step is skipped.
+  - `pip install youtube-transcript-api yt-dlp faster-whisper` and `ffmpeg` on the machine.
+  - For speech recognition on an NVIDIA GPU (videos without subtitles):
+    `pip install nvidia-cublas-cu12 "nvidia-cudnn-cu12==9.*"`. Without a GPU it runs the small
+    model on CPU, about 3× slower and with more errors.
+  - For Bilibili subtitles and favourite counts: a Netscape cookie file of a logged-in account
+    (only `SESSDATA`, `DedeUserID`, `DedeUserID__ckMd5` are needed). Keep it outside the repo.
+  - Put the paths in `local.md` under a "Video tools" section as the script's flags
+    (`--ytdlp`, `--ffmpeg`, `--models`, `--cookies`, `--ytdlp-opts`), plus the Python to run it
+    with if the packages live in a separate venv.
 
 ### Use
 
@@ -224,7 +233,7 @@ teach a section of an existing note.
 | `scripts/prep_slides.py` | PDF → text with page markers, overview contact sheets and slide screenshots (PyMuPDF) |
 | `scripts/svg_anim.py` | `Scene` helper that builds animated SVGs from computed data; `lint` checks Obsidian compatibility; `frames` renders chosen moments with headless Chrome/Edge for visual review |
 | `scripts/mindmap.py` | Optional course mind map: an outline with `@week\|heading@` link tokens becomes an inline `markmap` note; every heading link is checked |
-| `scripts/video_transcript.py` | YouTube captions → plain text with [m:ss] stamps, for distilling how explainer videos teach a topic |
+| `scripts/video_transcript.py` | YouTube / Bilibili video → plain text with [m:ss] stamps (platform subtitles, else speech recognition), for distilling how explainer videos teach a topic; `--stats` ranks candidates by views, then favourites |
 | `scripts/lint_note.py` | House-style check: slide pages as (p. N), every supplement cited author–year, citations match the reference list, every figure captioned, every example block has a result line |
 | `scripts/publish_note.py` | Writes the note and attachments into the vault through `cli-anything-obsidian`, refuses to overwrite edits made in Obsidian, and checks that every embed resolves |
 

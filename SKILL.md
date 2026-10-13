@@ -337,21 +337,35 @@ python <skill>/scripts/prep_slides.py prep "<pdf>" "<work>" [--pages A-B]
 ### 2b. Borrow the teaching path from explainer videos (default; skip if none found)
 Good teachers have already found the shortest way into most topics, and the slides rarely show
 it. Before planning, find out how they open the topic:
-1. WebSearch for 1–3 explainer videos on the lecture's core topic, e.g. `<topic> explained`.
-   Prefer widely watched ones from recognised channels and lecturers. Search in English first.
-2. Fetch each transcript:
+1. WebSearch for explainer videos on the lecture's core topic on YouTube and Bilibili, e.g.
+   `<topic> explained` and `<中文主题> 讲解 bilibili`. Collect the candidate URLs.
+2. Rank the candidates and keep the top **1–2**. The rule is most views first, then most
+   favourites; ignore every other number (likes, comments, upload date, channel size):
    ```bash
-   python <skill>/scripts/video_transcript.py "<youtube url or id>" "<work>/videos/<slug>.txt"
+   python <skill>/scripts/video_transcript.py --stats <url> <url> ... <video flags>
    ```
-   If a video has no captions the script says so; pick another. If none work, note it in
-   `plan.md` and plan from the slides alone.
-3. Distill each transcript into `plan.md`, a few lines per video:
+   It prints the candidates already sorted. YouTube shows no favourite count, so for YouTube the
+   views alone decide.
+3. Fetch each kept video's transcript:
+   ```bash
+   python <skill>/scripts/video_transcript.py "<url>" "<work>/videos/<slug>.txt" <video flags>
+   ```
+   The script uses the platform's subtitles when there are any (YouTube captions, Bilibili CC or
+   AI subtitles). When a video has none it falls back to speech recognition (faster-whisper,
+   large-v3 on GPU, about 25 s per 5 min of audio), so never drop a top-ranked video for lacking
+   subtitles. Speech recognition garbles technical terms (欠拟合 → 欠你和, sklearn → Secular):
+   read past them and never quote them as the teacher's words. `<video flags>` are this
+   machine's yt-dlp, ffmpeg, model and cookie paths from `local.md` (section "Video tools"),
+   which may also name the Python to run the script with; Bilibili
+   subtitles and Bilibili `--stats` need `--cookies` of a logged-in account. If no video works,
+   note it in `plan.md` and plan from the slides alone.
+4. Distill each transcript into `plan.md`, a few lines per video:
    - **Hook:** the first familiar example the teacher uses.
    - **Essence:** the one sentence that states what the idea is.
    - **Order:** which ideas come in which order.
    - **Skipped:** what the teacher leaves out at first.
    - **Analogies.**
-4. Use them for the gist and the order of lessons, but keep the slides' content and coverage.
+5. Use them for the gist and the order of lessons, but keep the slides' content and coverage.
    Cite each video you draw on in References (channel or speaker, year, title, URL), and never
    copy long passages.
 
@@ -885,7 +899,8 @@ overlapping, duplicated content).
 - [ ] The note opens with an At a glance block; it and each part's first lines give the gist (one
       familiar example in → out, why it matters, ≤ 3 sentences, ≤ 1 term) before any question,
       table or calculation; details that do not change the gist are in tables, folds or the cram section
-- [ ] Explainer videos were searched (2b); the ones used are distilled in `plan.md` and cited, or
+- [ ] Explainer videos were searched on YouTube and Bilibili (2b), the top 1–2 by views then
+      favourites were kept; the ones used are distilled in `plan.md` and cited, or
       `plan.md` says none were usable
 - [ ] No section opens with a term, definition, formula or bare numbers
 - [ ] The user chose each multi-lesson topic's running story (2–3 candidates offered); slide
