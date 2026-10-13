@@ -150,7 +150,8 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 ### 13. Answer depth follows inference steps (subgoals, faded examples)
 - **Rule:** a one-step answer is one line. A multi-step answer gives one labelled sub-step per
   inference. An operation the reader meets for the first time is worked in full once, and later
-  uses fade to the result.
+  uses fade to the result. The student test (6d) takes on the real reader's profile (`Reader:` in
+  `local.md`) and reports jumps against it.
 - **Why:** labelling the subgoals of a worked solution helps learners rebuild and transfer it
   (Catrambone, 1998; Margulieux, Guzdial & Catrambone, 2012). Fading worked steps as competence
   grows smooths the move from studying examples to solving problems (Renkl & Atkinson, 2003).
@@ -160,7 +161,8 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 - **Session note (2026-10-02):** §4 Q3 answered "(1×10)(10×10) = 1×10" with no product shown, and
   the learner did not know how to multiply a row by a matrix. §5 Q3 gave scientific notation
   without steps, and §7 Q3 wrote `diag(0.25, 0.25)`. Meanwhile trivial questions got full
-  paragraphs.
+  paragraphs. The student test had played a generic beginner, not this reader, so it caught none
+  of it.
 
 ### 14. Fluent is not understood: causal chains, plain words before terms, restate to check
 - **Rule:** teach a new idea as one scenario plus one connected chain of sentences ("because… so…
@@ -339,6 +341,8 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 - Rozenblit, L., & Keil, F. (2002). The misunderstood limits of folk science: An illusion of
   explanatory depth. *Cognitive Science*, 26(5), 521–562.
   https://doi.org/10.1016/S0364-0213(02)00078-2
+- Scarlatos, A., Lee, J., Woodhead, S., & Lan, A. (2026). Simulated students in tutoring dialogues:
+  Substance or illusion? *Proceedings of ACL 2026*. arXiv:2601.04025. https://arxiv.org/abs/2601.04025
 - Sinha, T., & Kapur, M. (2021). When problem solving followed by instruction works: Evidence for
   productive failure. *Review of Educational Research*, 91(5), 761–798.
   https://doi.org/10.3102/00346543211019105

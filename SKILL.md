@@ -42,7 +42,7 @@ the goal is to understand what each idea solves and what it is for, so that exam
 
 **The concrete reader.** The `Reader:` line in `local.md` describes this user's background
 (degree, what is rusty, what is new). If it is missing, ask once and add it. It sets how much each
-step needs spelling out. Pitch notes at a capable
+step needs spelling out, and it is the persona of the student test (6d). Pitch notes at a capable
 non-specialist: show an operation the reader has not met yet (a matrix product, a norm) worked in
 full once, and never pad what they already handle.
 
@@ -268,7 +268,9 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
   "Lecture Notes"`). Where each course's slides live on this machine is in `<skill>/local.md`
   (git-ignored). If that file or the course's row is missing, ask the user for the slide folder,
   then create/extend `local.md`: a two-column table, `| Vault folder | Slides |`, one row per course.
-  `local.md` also holds one `Reader:` line, the learner's background (see "The concrete reader").
+  `local.md` also holds one `Reader:` line, the learner's background (see "The concrete reader"),
+  and an optional `Student model:` line naming the weak model for the student test (6d), e.g.
+  `Student model: haiku`.
 - **Lecture number ≠ week number** (e.g. AI6103 "Lecture 3 ML Foundations" is WEEK 4). Never pick
   the PDF from its filename alone: check `source_pdf` in existing WEEK notes, then open the PDF's
   first pages. `source_pdf` may be a path from another machine: match on the file name only.
@@ -316,8 +318,8 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
      - "new to this subject": school maths, basic calculus;
      - "related background, rusty";
      - "solid background, wants depth".
-   Save the answer as the `Reader:` line. It drives the prerequisite check (step 3.5) and how much
-   each step is spelled out.
+   Save the answer as the `Reader:` line. It drives the prerequisite check (step 3.5), how much
+   each step is spelled out, and the student test (6d).
 6. Read 1–2 recent substantial notes of the **same course** for terminology and link targets
    (their style may predate the rules below; the rules below win).
 
@@ -724,10 +726,57 @@ adds beyond them. So, while writing:
 
 ### 6d. Student test of the questions (default, always)
 `verify.py` proves the answers are right, not that the questions can be understood. So before
-publishing, launch **one fresh subagent** with the Agent tool (`subagent_type: "general-purpose"`).
-Give it only `<work>/note.md` and no slides, plans or chat context. Ask it to act as the target
-reader, a beginner who reads the note top to bottom and **answers every question before opening
-its fold**. For each question it reports:
+publishing, launch **one fresh subagent on a weak model**. A weaker reader stumbles where a learner
+would, and it is cheap. Which model to use is the user's choice: the `Student model:` line in
+`local.md`.
+- If the line is missing, use the host's smallest model. In Claude Code that is the Agent tool
+  with `subagent_type: "general-purpose"` and `model: "haiku"`.
+- In another CLI, use any weaker model it can launch as a subagent.
+- If the host cannot pick a model, use a fresh subagent on the default model; the knowledge
+  limit below still applies.
+
+Give it only `<work>/note.md` and `<work>/known.md`, and no slides, plans or chat context.
+
+**The goal is better questions, not a grade for the model.** The score is a list of symptoms, and
+each miss points at the note:
+- **Note gap:** a step was never taught, or was taught only in shorthand. Fix the note.
+- **Question flaw:** hidden setup, two readings, too easy, or off-story. Rewrite the question.
+- **Model slip:** the note and the question were fine and the weak model simply erred. Ignore it.
+
+Never make a question easier, or leak its answer into the prompt, just to raise the score. A
+question that everyone answers right is a "too easy" flag, not a success.
+
+**A simulated student is a filter, not proof.** Prompted LLM students are poor stand-ins for real
+learners; fine-tuning helps but is still limited [Scarlatos et al., 2026]. A clean 6d run means
+"no obvious gaps found". The real learner's sticking points stay the gold signal: record them in
+the session notes and use them as regression cases.
+
+**Limit its knowledge; do not just ask it to role-play.** Told to "act as a beginner", a model
+still uses everything it knows, so it passes answers the real reader cannot follow. First write
+`<work>/known.md`, the only knowledge it may use besides the note:
+- the `Reader:` line;
+- the prerequisites marked *has* in step 3.5;
+- the glossary terms of earlier notes in the same course.
+
+Then tell the subagent:
+- answer every question **before opening its fold**, using only `note.md` (up to that question)
+  and `known.md`;
+- **cite the source of every step** of its answer: a quoted line of the note, or a `known.md`
+  entry;
+- any step it can only take with its own background knowledge is marked `OUTSIDE: <what was
+  needed>`. That counts as a jump, even if its final answer is right.
+
+It ends with a score: questions answered correctly with no `OUTSIDE` step, out of the total. In
+the reply, report the score together with how many misses were note gaps, question flaws and
+model slips, and what was fixed. For each question it reports:
+- **too easy**: could it answer correctly without understanding this lesson's idea?
+- **jump**: which step of the fold's answer could it not have produced itself, and what was
+  missing?
+- **off-story**: does the question leave the topic's running story or quietly change its setup?
+- **restate**: after each lesson, the lesson's causal chain in its own words, from problem to
+  outcome, citing note lines. A link it cannot restate from the note is a note gap, however
+  clear the prose reads. Ratings of clarity do not predict comprehension, and explaining is what
+  exposes the gaps [Guo et al., 2025; Cruz & Lombrozo, 2025].
 - its own answer, and whether it matches the fold;
 - any symbol whose meaning it had to guess, or that means two things in the note;
 - any object it could not locate ("which 4 numbers?", "what is N here?");

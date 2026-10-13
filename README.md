@@ -118,7 +118,7 @@ Full reasoning, the session notes that shaped each rule, and 31 references are i
 **Learning first**
 - **Taught at your level.** On first use, `/lla` asks about your background: new to the subject,
   related but rusty, solid, or your own description. The answer sets how much each step is spelled
-  out.
+  out, and the built-in student test checks the questions as *you*, not as a generic reader.
 - **Prerequisites up front.** Before writing, it tells you what the material assumes you already
   know. Something the slides use but never explain is taught properly where it is first needed,
   marked as a supplement. Background the slides never mention is only added if you say yes.
