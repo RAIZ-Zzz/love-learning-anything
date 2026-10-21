@@ -16,6 +16,8 @@ lecturer: <name>               # (optional) if on the title slide
 source_pdf: "<absolute path with forward slashes>"
 pages: "<A-B>"
 pdf_page_count: <total pages of the PDF>
+pages_skipped: "<pages with no content, each with its reason: 1 (cover), 56 (Q&A)>"
+page_scope: "<only for multi-PDF notes: which ## parts cite which PDF, e.g. 0-2=W02; 3-6=W04>"   # (optional)
 created: <YYYY-MM-DD>          # keep the original date when rewriting
 updated: <YYYY-MM-DD>
 tags:
@@ -30,7 +32,7 @@ tags:
 > « Previous: [[WEEK <n-1>]] · Next: [[WEEK <n+1>]] »   ← only link notes that exist
 > **<course>** · `<pdf file name>` · **PDF p. A–B**
 > A step-by-step teaching note: easy → hard, one new idea at a time. Every lesson follows
-> **the problem → work it out yourself → the concept from the slides → what it solves and is for → pros and cons → next**.
+> **the problem → how it works, end to end → the concept from the slides → what it solves and is for → pros and cons → in your own words → next**.
 > The folded Deep dive blocks can be skipped; the main line still makes sense without them.
 
 | Reading route (easy → hard) | Slides | After it you can answer |
@@ -47,8 +49,9 @@ tags:
 
 ## Before we start: what problem this lecture solves
 
-<One running scenario with 2–3 numbers: where we are stuck and what this lecture gives us.
-Tell it as a story, not a list.>
+<Where we are stuck and what this lecture gives us, with 2–3 numbers, in connected sentences,
+not a list. Mechanism lectures: the running scenario. Math/stat lectures: the slide's own example
+or bare numbers, no story (SKILL.md "Story or bare numbers").>
 
 ## Part 1 · <topic>
 
@@ -58,8 +61,13 @@ Tell it as a story, not a list.>
 <Plain words: what goes wrong without this idea, as a concrete failure. Say where every number
 comes from and what it means. No term, definition or formula yet.>
 
-<No label here. The last sentence of "Why we need it" moves the topic's running scenario into this
-lesson's new situation and hands the reader the first question in plain words, e.g. "Now the GPU
+<No label here. DEFAULT: connected prose that explains how it works, the way a good blog does:
+the whole process end to end on one real example (what goes in, at which stage, what comes out),
+then the key step; flag on the spot any simplification that changes how the mechanism looks.
+At most 1–2 check questions after it, never calculation questions unless the user asked (--calc).>
+
+<ONLY WITH --discover: the last sentence of "Why we need it" moves the topic's running scenario (math/stat
+points: the bare numbers) into this lesson's new situation and hands the reader the first question in plain words, e.g. "Now the GPU
 only fits 2 of the 4 images. What mean does BN compute? Try it before opening the fold." Then the
 reader applies what they already learned, watches it fail inside the story, and is guided to the fix:>
 
@@ -117,7 +125,29 @@ terms (e.g. "use ReLU as the activation"), in the note language and in English.>
 <What it buys vs what it costs. End with the weakness that the next lesson fixes, phrased as the
 next lesson's problem.>
 
+> [!question]- In your own words: <this lesson's concept>
+> Close the note and explain it to a friend who has not studied it, in 3–5 plain sentences: what
+> it is, what problem it solves, and how it works from input to output. Then open the checks.
+>
+> > [!success]- Key links: your answer should contain
+> > - [ ] <link 1: what it is, in plain words>
+> > - [ ] <link 2: the problem it solves>
+> > - [ ] <link 3: how it works, input → output>
+>
+> > [!example]- One way to say it
+> > <≤ 5 everyday sentences, ≤ 1 term, no formula; it must contain every key link above>
+
 ### 1.2 <next concept> … (same arc; its "Why we need it" grows out of 1.1's pros and cons)
+
+### Fallacies and pitfalls
+
+> [!failure] Fallacy 1.1: <the wrong belief, stated as confidently as a learner would hold it>
+> **Counterexample:** <real numbers: slides p.N, a real run, or [Author, Year]>.
+> **Why it fails:** <one causal chain, because … so …, linking the lesson that teaches the cause: [[#1.1 …|§1.1]]>.
+> **Correct statement:** <note language>. *EN: <English>.*
+
+> [!failure] Pitfall 1.2: <the easy wrong action>
+> **Counterexample:** … **Why it fails:** … **Correct statement:** …
 
 > [!question]- Pause: <the part's causal chain as one why-question>
 > Answer in your own words **without scrolling back**, out loud or on paper. Then open the checks.
@@ -132,6 +162,20 @@ next lesson's problem.>
 > > > <answer + which key link it tests>
 
 … (continue part by part in slide order) …
+
+## Part N−1 · Putting it all together: <real system, e.g. Llama-2-7B>
+
+<One paragraph: which system, why it fits this note, where its numbers come from [Author, Year].>
+
+**Table N−1.1 · <system> config**
+| Quantity | Value | Source |
+| --- | --- | --- |
+
+<Then one short paragraph per core lesson, in lesson order: "§1.1 says … ([[#1.1 …|§1.1]]); for
+<system> that is" + formula → substitution → what the number means for the system. Yardsticks from
+local.md, if set, each get a number.>
+
+<Close with the limit these numbers expose, phrased as the next note's problem.>
 
 ## Part N · Review and practice
 
@@ -200,7 +244,11 @@ language follows whichever column is closer, or asks the user.
 | Eq. (14.3) | 式 (14.3) |
 | Cause and effect | 前因后果 |
 | Common pitfall | 易错点 |
+| Fallacies and pitfalls · Fallacy k · Pitfall k | 误区与陷阱 · 误区 k · 陷阱 k |
+| Counterexample · Why it fails · Correct statement | 反例 · 为什么错 · 正确说法 |
+| Putting it all together: … | 串起来看：… |
 | Pause: … | 停一下：… |
+| In your own words: … · One way to say it | 用自己的话讲：… · 一种讲法 |
 | Key links: your answer should contain · Predict: … | 关键环节：你的回答应该包含 · 预测：… |
 | Summary | 本讲小结 |
 | Exercises · Exercise k · Show answer | 练习 · 练习 k · 展开答案 |
@@ -235,17 +283,35 @@ English labels from the table above.
   table as the page contents (本讲目录).
 - **Sections:** decimal numbers throughout (`## 第四部分 · …`, `### 14. …`, `#### 14.3 …`).
   A lesson heading carries its slide pages: `#### 14.3 为什么 batch 不能太小（Batch Size）（p.53）`.
-- **End of the note, in this order:** `本讲小结` (one-page summary) → `练习` → `术语中英对照` →
+- **End of each `##` part:** `### 误区与陷阱` (2–3 `[!failure]` callouts) → the `停一下` Pause fold.
+- **End of the note, in this order:** `串起来看：<system>` (its own `##` part) → `本讲小结` (one-page summary) → `练习` → `术语中英对照` →
   `参考文献` → the same navigation line as the top.
 
 ### Worked examples (the 实例 block)
 Every hand-worked calculation or code run that the reader should follow is one block:
 ```markdown
 > [!example] 实例 14.3：batch = 2 时均值有多晃
-> 4 张图的值 2、4、6、8，每次只抽 2 张……
+> 4 张图的值 2、4、6、8，每次只抽 2 张。① 一共几种 batch？② 每种的均值是多少？
 >
-> **计算结果：** 6 种 batch 的均值是 3、4、5、5、6、7，最多偏离 5 两个单位。
+> > [!success]- 展开解答
+> > $$\begin{aligned}
+> > \mu_B &= \frac{x_1 + x_2}{2} \\
+> > \mu_{\{2,4\}} &= \frac{2 + 4}{2} = \frac{6}{2} = 3
+> > \end{aligned}$$
+> >
+> > $$\begin{aligned}
+> > \mu_B &= \frac{x_1 + x_2}{2} \\
+> > \mu_{\{2,6\}} &= \frac{2 + 6}{2} = \frac{8}{2} = 4
+> > \end{aligned}$$
+> >
+> > ……
+> >
+> > **计算结果：** 6 种 batch 的均值是 3、4、5、5、6、7，最多偏离 5 两个单位。
 ```
+The visible part holds only the problem (① ② sub-questions), so the reader can try first; the
+steps and the result line sit in the nested `展开解答` (`Show solution`) fold. Every calculation
+in the solution writes the formula first, then the substitution, and repeats the formula at each
+new step (SKILL.md "Every calculation: the formula first").
 The label `实例 <section>.<k>` is numbered by section. The result line always starts with
 **计算结果：** (for code: **运行结果：** followed by a code block of the real output).
 Analogies are **not** 实例 blocks; they use `> [!quote] 打个比方`.
@@ -257,6 +323,7 @@ Analogies are **not** 实例 blocks; they use `> [!quote] 打个比方`.
 | **Beyond the slides, one sentence** | Sentence + `（补充 [Author, Year]）` | batch = 2 时 GroupNorm 的错误率比 BN 低约 10 个百分点（补充 [Wu & He, 2018]）。 |
 | **Beyond the slides, a paragraph or more** | A fold titled `补充：<topic>`, whose last line is `来源：[Author, Year]` | see below |
 | **Derived here from slide content** (algebra, a worked example, no outside claim) | `（本笔记推导）`, or inside a `深入：` fold; covered by `verify.py` | 两式相减即得 ρ = 2/‖w‖（本笔记推导）。 |
+| **Distilled from a source the user picked** | Passage ends in `（改写自 [Author, Year]）`; a borrowed figure / video frame / table has the source in its caption: `*图 k · Alammar, 2018 · …*` | 每个词向量乘三个矩阵，得到 q、k、v（改写自 [Alammar, 2018]）。 |
 | **Could not be confirmed** | `（待核对：<what is unsure>）` | |
 
 ```markdown
@@ -292,7 +359,8 @@ the two, and never write a bare `（补充）` without a citation.
 
 ### Text conventions
 - **Short notes** inside prose, Runoob style: a paragraph starting with **注意：** in bold.
-  A real, common misconception gets a `> [!warning] 易错点` box instead.
+  A short usage caution gets a `> [!warning] 易错点` box; a misbelief a counterexample can refute
+  goes into the part's `误区与陷阱` block as a `> [!failure]` callout.
 - **New term, first definition:** **中文（English）** in bold, then the one-line `*EN: …*` statement.
 - **Bilingual statements:** the Chinese sentence, then `*EN: …*` on the next line (`zh+en`).
 - **Symbols:** one letter, one meaning for the whole note (symbol table in `plan.md`), and the
@@ -308,9 +376,11 @@ the two, and never write a bare `（补充）` without a citation.
 | Question chain | `> [!question]- 第 k 题：…` |
 | Question needing a matrix / display formula | `> [!question]- 第 k 题：<short ask>`; setup + `$$…$$` in the body; answer nested as `> > [!success]- 展开答案` |
 | End-of-part check | `> [!question]- 停一下：…` |
+| End-of-lesson Feynman restate | `> [!question]- 用自己的话讲：…`; nested `> > [!success]- 关键环节：你的回答应该包含` and `> > [!example]- 一种讲法` |
 | Practice answer | `> [!success]- 展开答案` under `#### 练习 k · <title>` |
 | Analogy | `> [!quote] 打个比方` |
-| Common pitfall | `> [!warning] 易错点` |
+| Common pitfall (short usage caution) | `> [!warning] 易错点` |
+| Fallacy / pitfall refuted by numbers (end of part) | `> [!failure] 误区 14.1：<wrong claim>` / `> [!failure] 陷阱 14.2：<wrong action>`; body lines **反例：** → **为什么错：** → **正确说法：** |
 | Exam-critical | `> [!important] <title>` |
 | Chain recap | `> [!tip] 前因后果` |
 | Deeper slide content | `> [!note]- 深入：…（可跳过）` |

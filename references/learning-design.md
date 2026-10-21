@@ -7,8 +7,8 @@ what went wrong and what fixed it.
 
 ## The approach in one paragraph
 
-A topic is taught through **one running scenario** that stays the same from the first lesson to the
-last. An example is a cat classifier whose layer 1 outputs 2, 4, 6, 8 on four training images and
+A mechanism topic is taught through **one running scenario** that stays the same from the first
+lesson to the last (math/stat concepts use bare numbers instead; principle 17). An example is a cat classifier whose layer 1 outputs 2, 4, 6, 8 on four training images and
 whose layer 2 has learned "above 5 means cat". Each new lesson moves that scenario into a new
 situation: layer 1 is updated, the GPU fits only 2 images, the model is deployed and receives one
 photo. The reader first **applies what they already learned**, watches it **fail inside the
@@ -20,7 +20,9 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 
 ### 1. One running scenario per topic (anchored instruction)
 - **Rule:** reuse one story across all lessons of a topic. Never bring in free-floating toy data,
-  and never give an existing number a new role without saying so.
+  and never give an existing number a new role without saying so. Since 2026-10-09 this applies
+  to "mechanism breaks in situation X" topics only; math/stat concepts use bare numbers
+  (principle 17).
 - **Why:** the Cognition and Technology Group at Vanderbilt (CTGV, led by John Bransford) built
   whole curricula around one "anchor" story, the *Jasper Woodbury* series. All later sub-problems
   live inside that story. Their target was **inert knowledge**, knowledge that can be recited but is
@@ -259,6 +261,73 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   they would have to ask me every time. The skill's restate check lived only in Mode B and had no
   grading standard. This principle answers both.
 
+### 17. Story or bare numbers: decided by the kind of knowledge point
+- **Rule:** math/stat concepts are taught on the slide's own example or bare small numbers, with no
+  story; a running story is kept only for "mechanism breaks in situation X" points. Every element
+  an example brings in must be used by the concept; count the new elements before Q1 (≤ 3). At
+  most one story per note, never re-set mid-note.
+- **Why:** how hard a task is depends on how many elements must be held in working memory at the
+  same time, and on what the learner already knows (Chen, Paas & Sweller, 2023). A story adds
+  elements twice: its own objects, then the mapping from each story quantity to a math symbol.
+  Interesting but irrelevant material lowers learning (seductive details; Sundararajan & Adesope,
+  2020, g = −0.33 over 68 effects), and the effect is largest for learners with no prior knowledge.
+  For mathematical structure, a lean abstract example transferred better than a rich concrete one
+  (Kaminski, Sloutsky & Heckler, 2008). Concreteness fading (Fyfe et al., 2014) keeps a concrete
+  start only as a short bridge to the symbols. Principle 1 still holds where the point *is* a
+  failure in a situation, because there the story carries the purpose.
+- **Session note (2026-10-09):** AI6103 WEEK 7 ran on a parcel-pricing story, and the learner said
+  the story made the points harder, not easier. Before §1 Q1 they had to hold a pricing rule
+  (2x+1 ± 1), a 4-branch table and 3 pricing methods. Two expectations (true price 5, mean quote
+  4) were both dressed as "prices", which led to "is the expectation given in advance or computed
+  by me?". The story also changed setting three times in one note. The pure-math slide question
+  (contours of 4x₁² + x₂²) caused no trouble. The running story had helped on 09-30 (BatchNorm,
+  vanishing gradients), so the rule was split by knowledge-point type rather than dropped.
+
+### 18. Every calculation: formula, then numbers, formula again at every step
+- **Rule:** every calculation writes the original formula, then substitutes numbers line by line
+  in hand-calculation form, and rewrites the formula at the top of each new step. No closed forms or
+  compressed sums in their place. Numeric plug-in steps, not proofs: a derivation becomes a
+  one-sentence conclusion plus at most a short numeric demo.
+- **Why:** worked examples that show every step teach better than leaving novices to solve
+  (Sweller & Cooper, 1985; Sweller, 1988), and a step the reader cannot trace back to a formula is
+  a gap they must fill alone. Repeating the formula at each step is the learner's own design: they
+  cannot memorise formulas by rote, and remember one by seeing it filled in again and again.
+- **Session note (2026-10-10):** during an Adam bias-correction drill, a compressed answer
+  ("s₂ = −7.6") left the learner asking where the number came from; they then proposed this rule.
+  The same night, a short algebraic argument for why Adam's two corrections do not cancel got
+  "I can't follow the math proof yet; give me the conclusion", which set the no-proofs limit.
+
+### 19. State the misbelief, then refute it with numbers (refutation text)
+- **Rule:** every `##` part ends with 2–3 fallacies or pitfalls. Each states the wrong idea as
+  the learner would hold it, refutes it with a counterexample with real numbers, explains why it
+  fails by linking the lesson that teaches the cause, and gives the correct statement.
+- **Why:** a learner who already holds a wrong idea does not drop it because the text explains
+  the right one. Both versions stay, and the old one tends to come back in a new situation. A
+  text that names the misconception first and then refutes it lets the reader recognise their
+  own belief and see it fail. Across 44 comparisons (n = 3,869), this refutation-text structure
+  beat other texts with g = 0.41 (Schroeder & Kucera, 2022). Its long-term effect on delayed tests
+  is less clear (Zengilowski et al., 2022), so the block complements the Pause and practice
+  questions; it does not replace them. The format is borrowed from the "Fallacies and Pitfalls"
+  sections that end every chapter of Hennessy & Patterson, where each item is a real designers'
+  misbelief and the refutation is quantitative. The numbers are what make it a refutation rather
+  than a warning.
+- **Session note (2026-10-15):** the user read H&P's structure and asked to add this to lla.
+  The hinge misconceptions recorded in principle 12 are the first source of items.
+
+### 20. One real system at the end, walked through every lesson (putting it all together)
+- **Rule:** each note ends its teaching with one real, named system (a published model config,
+  a real run), walked through every core lesson in order with real numbers, introducing nothing
+  new and ending in the limit the next note addresses. Courses may also set yardsticks, a few
+  quantities every method is measured in.
+- **Why:** lessons teach each mechanism in isolation, so the learner can state each one and still
+  not see how they combine in a real system. That is the inert knowledge anchored instruction
+  targets (principle 1). A whole-system walk-through makes each lesson a step in one computation,
+  and the real numbers show which part dominates. H&P end every chapter this way ("Putting It All
+  Together": a real processor analysed with the chapter's ideas), and their chapter 1 sets a few
+  quantitative principles (the processor performance equation, Amdahl's law) that every later
+  chapter reuses, which is what keeps a long book connected. This is a design borrowed from a
+  widely used textbook, not an experimental finding.
+
 ## References
 
 - Alammar, J. (2018). The Illustrated Transformer. https://jalammar.github.io/illustrated-transformer/
@@ -278,6 +347,9 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   as one-to-one tutoring. *Educational Researcher*, 13(6), 4–16.
 - Catrambone, R. (1998). The subgoal learning model: Creating better examples so that students can
   solve novel problems. *Journal of Experimental Psychology: General*, 127(4), 355–376.
+- Chen, O., Paas, F., & Sweller, J. (2023). A cognitive load theory approach to defining and
+  measuring task complexity through element interactivity. *Educational Psychology Review*, 35(2),
+  63. https://doi.org/10.1007/s10648-023-09782-w
 - Chromik, M., Eiband, M., Buchner, F., Krüger, A., & Butz, A. (2021). I think I get your point,
   AI! The illusion of explanatory depth in explainable AI. *Proceedings of IUI '21*, 307–317.
   https://doi.org/10.1145/3397481.3450644
@@ -303,13 +375,20 @@ result → consequence → conclusion, and the topic's last lesson calls back to
   (2014). Active learning increases student performance in science, engineering, and mathematics.
   *PNAS*, 111(23), 8410–8415. https://doi.org/10.1073/pnas.1319030111
 - Freire, P. (1970). *Pedagogy of the Oppressed*. Herder and Herder.
+- Fyfe, E. R., McNeil, N. M., Son, J. Y., & Goldstone, R. L. (2014). Concreteness fading in
+  mathematics and science instruction: A systematic review. *Educational Psychology Review*, 26(1),
+  9–25. https://doi.org/10.1007/s10648-014-9249-3
 - Google for Developers (n.d.). Technical Writing One: Short sentences. https://developers.google.com/tech-writing/one/short-sentences
 - Guo, Y., Sohn, J. H., Leroy, G., & Cohen, T. (2025). Are LLM-generated plain language summaries
   truly understandable? A large-scale crowdsourced evaluation. arXiv:2505.10409.
   https://arxiv.org/abs/2505.10409
 - Hugging Face (n.d.). LLM Course, Chapter 2: Behind the pipeline. https://huggingface.co/learn/llm-course/chapter2/2
+- Hennessy, J. L., & Patterson, D. A. (2017). *Computer Architecture: A Quantitative Approach*
+  (6th ed.). Morgan Kaufmann.
 - Kalyuga, S., Ayres, P., Chandler, P., & Sweller, J. (2003). The expertise reversal effect.
   *Educational Psychologist*, 38(1), 23–31.
+- Kaminski, J. A., Sloutsky, V. M., & Heckler, A. F. (2008). The advantage of abstract examples in
+  learning math. *Science*, 320(5875), 454–455. https://doi.org/10.1126/science.1154659
 - Kapur, M. (2008). Productive failure. *Cognition and Instruction*, 26(3), 379–424.
 - Kapur, M., & Bielaczyc, K. (2012). Designing for productive failure. *Journal of the Learning
   Sciences*, 21(1), 45–83.
@@ -346,9 +425,21 @@ result → consequence → conclusion, and the topic's last lesson calls back to
 - Sinha, T., & Kapur, M. (2021). When problem solving followed by instruction works: Evidence for
   productive failure. *Review of Educational Research*, 91(5), 761–798.
   https://doi.org/10.3102/00346543211019105
+- Schroeder, N. L., & Kucera, A. C. (2022). Refutation text facilitates learning: A meta-analysis
+  of between-subjects experiments. *Educational Psychology Review*, 34, 957–987.
+  https://doi.org/10.1007/s10648-021-09656-z
+- Sundararajan, N., & Adesope, O. (2020). Keep it coherent: A meta-analysis of the seductive
+  details effect. *Educational Psychology Review*, 32(3), 707–734.
+  https://doi.org/10.1007/s10648-020-09522-4
 - Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. *Cognitive
   Science*, 12(2), 257–285.
+- Sweller, J., & Cooper, G. A. (1985). The use of worked examples as a substitute for problem
+  solving in learning algebra. *Cognition and Instruction*, 2(1), 59–89.
+  https://doi.org/10.1207/s1532690xci0201_3
 - Tufte, E. R. (2003). *The Cognitive Style of PowerPoint*. Graphics Press.
 - VanLehn, K. (2011). The relative effectiveness of human tutoring, intelligent tutoring systems,
   and other tutoring systems. *Educational Psychologist*, 46(4), 197–221.
 - Wiliam, D. (2011). *Embedded Formative Assessment*. Solution Tree Press.
+- Zengilowski, A., Nash, B. L., Schuetze, B. A., & Schallert, D. L. (2022). Bringing refutation
+  texts back to their literacy roots. *Literacy Research: Theory, Method, and Practice*.
+  https://doi.org/10.1177/23813377221109544

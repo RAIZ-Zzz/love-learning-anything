@@ -40,9 +40,13 @@ Inputs (read all of them):
    itself; a formula whose symbols are not all explained.
 
 ### B. Teaching rules (from SKILL.md) — check each
-- A lesson does not walk the arc: problem in plain words → self-discovery questions → the slides'
-  concept → what it solves and is for → pros/cons leading into the next lesson; or a transition
-  between steps is abrupt.
+- A lesson does not walk the arc: problem in plain words → how it works, explained end to end
+  (self-discovery questions only if the note says discovery is on) → the slides' concept → what it
+  solves and is for → pros/cons leading into the next lesson; or a transition between steps is
+  abrupt.
+- A lesson never states its whole process (input → stage → output); an example built for easy
+  arithmetic misrepresents the real mechanism without saying so; a conclusion comes before the
+  mechanism that explains it.
 - A section opens with a term, definition, formula or bare numbers, or uses a number before saying
   what it means.
 - A technical point is not stated in both the note language and English (when `lang` asks for it).

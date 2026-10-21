@@ -2,8 +2,8 @@
 name: lla
 description: >
   Turn a PDF (one week's lecture slides, or a paper or book chapter) into a step-by-step teaching
-  note built for learning like an engineer, starting from the problem, not for exam drilling: every knowledge point goes problem → reader discovers the fix through guided
-  questions → the slides' concept → what it solves and is for → pros/cons leading to the next point;
+  note built for learning like an engineer, starting from the problem, not for exam drilling: every knowledge point goes problem → how it works, explained end to end in plain prose
+  the way good blogs and videos explain it (guided-discovery questions only on request) → the slides' concept → what it solves and is for → pros/cons leading to the next point;
   hard extras folded; animated SVG where motion helps; in the user's Obsidian vault at
   `Lecture Notes/<course>/WEEK n.md`, with slide screenshots in the course `attachments/` folder,
   hand-worked examples verified by script, and fold-answer practice questions. The note language is
@@ -13,7 +13,7 @@ description: >
   one of their courses. Also use to teach a section of an existing WEEK note interactively by
   exercises ("teach me WEEK n section x", "you ask, I answer", "what is this section for").
   Not for whole-course exam-prep vaults or mastery-tracked quizzing — that is /tutor-setup and /tutor.
-argument-hint: "<subject> <note name | vault path> [file to learn] [pages A-B] [--lang zh|en|zh+en|en+zh]"
+argument-hint: "<subject> <note name | vault path> [file to learn] [pages A-B] [--lang zh|en|zh+en|en+zh] [--discover] [--calc]"
 ---
 
 # LLA · Love Learning Anything — one PDF → one step-by-step teaching note
@@ -36,8 +36,8 @@ the course has several weeks of notes and an exam is coming.
 
 The reader's attention for new material is **very limited**. A wall of unexplained terms at the
 start of a section loses them at once, and summary-style notes (dense bullet lists, "X is …; Y is
-…; Z is …") do not teach them. They learn when a **patient teacher lets them discover each idea
-themselves**, one idea at a time, easy → hard. The notes are **for learning, not for exam drilling**:
+…; Z is …") do not teach them. They learn when a **patient teacher explains how each idea works,
+end to end, with a real example**, one idea at a time, easy → hard. The notes are **for learning, not for exam drilling**:
 the goal is to understand what each idea solves and what it is for, so that exam answers follow.
 
 **The concrete reader.** The `Reader:` line in `local.md` describes this user's background
@@ -71,6 +71,13 @@ before any problem, story question, table or term, the reader gets the **gist**:
 The test: after 30 seconds, could the reader tell a friend what this lecture (part, lesson) is
 about? If not, the gist is too long or too abstract. Cut it, do not add to it.
 
+**A lecture that builds a system from parts shows the whole system first** (2026-10-15: AI6130
+Part 3 skipped the slides' overview pages p.49–50 and showed the full Transformer only in its
+last lesson; after three lessons of attention the reader asked "why no Transformer yet?"). Put
+the overview figure (the slides' own, or the picked source's black-box sequence) in the opening
+section, say which lesson teaches which part, and check that the slides' overview pages are not
+silently skipped.
+
 The gist sits at three levels: the note's **At a glance** block (before anything else), the first
 lines of each `##` part, and the first sentence of each `###` lesson. Detail that does not change
 the gist (lists of datasets, numbers from studies, every variant) goes into tables, folds or the
@@ -79,7 +86,61 @@ Their job is to deepen and check an idea the reader can already state, not to in
 Where possible, take the gist's example and the order of ideas from a well-made explainer video
 (workflow step 2b): good human teachers have already found the shortest path into the topic.
 
-**One running scenario per topic, from start to end.** A topic that spans several lessons (e.g.
+**Default: explain how it works; guided discovery is opt-in.** By default, step 2 of the arc is
+ordinary teaching, the way a good blog post or lecture explains the idea (workflow steps 2b–2c),
+not a question chain. Turn the question chain on only when the user asks for it (`--discover`, or
+"let me work it out myself", "带推导题"). Why: on AI6130 Parts 1–2 (2026-10-14) the reader found the
+chains confusing. Each question was correct on its own, but the numbers were chosen to be easy to
+compute, so the reader had to rebuild the real process from the answers, and sometimes rebuilt it
+wrong. A one-to-one alignment example made attention look like word-by-word translation. Cutting
+the prompt itself into 2-grams made n-gram look like it splits the user's input rather than counting
+a corpus. A conclusion ("a trailing space makes the model write a digit") came six lessons before
+the mechanism behind it. So the explanation must do these things:
+- **Walk the whole process, end to end.** Say what goes in, at which stage it happens (training or
+  use, corpus or user input), what is computed, and what comes out, before zooming into any step.
+- **Use a real example.** Take the slides' own example or the one the best explainers use. Never
+  use one built only to make the arithmetic easy. If a story example cannot play the real role,
+  drop the story for that lesson.
+- **Flag every simplification where it occurs.** If a simplification changes how the mechanism
+  looks (one-to-one weights, a tiny vocabulary), say so on the spot and state the real case.
+- **Give no conclusion before its mechanism.** A claim whose cause is taught later is either
+  explained right there in one or two sentences or moved to where the cause is taught.
+- **Core points get a picture; prose alone does not reach this reader** (2026-10-15: the
+  teacher-forcing explanation in AI6130 Part 2 was correct prose and still unreadable to them).
+  Only the **core mechanisms** of a lecture get one, not every point (that burns tokens and
+  buries the important figures). Allowed forms: the slide figure, an SVG (4b), a Mermaid diagram
+  (Obsidian renders it), or a formula written once in general form and once with the example
+  substituted ($-\log P(\text{me}\mid \text{he hit}, s)$). **Never ASCII / text-grid flowcharts**,
+  in notes or in chat. Lay the picture out so the key point is visible by position (one column per
+  time step; input row above target row). For a contrast (teacher forcing vs feeding the model's
+  own guesses), show both side by side so the one thing that changes is visible. Take the picture
+  idea from the explainers found in 2b–2c (say which one), not invented from scratch. These are
+  worked examples to read, not calculation questions, so the rule below does not forbid them.
+**No calculation questions unless the user insists** (2026-10-14, user's decision). Do not ask
+the reader to compute anything, whether in check questions, Pause folds or practice questions,
+unless the user asks for it (`--calc`). A worked example the reader only reads is still fine when
+it is the real computation the slides do (counts → 0.4). It comes after the process has been
+explained, and its numbers are still checked by `verify.py`.
+
+**Story or bare numbers: the kind of knowledge point decides.** A story costs working memory
+twice: first the reader loads its objects, then maps each story quantity onto its math symbol.
+How hard a task is depends on how many elements must be held at once [Chen et al., 2023], and a
+story adds elements. That cost pays off only when the point is about a mechanism breaking in a
+situation. So classify every knowledge point first:
+- **Math/stat concepts** (expectation, bias–variance, Hessian, condition number, a norm, a
+  distribution): **no story.** Use the slide's own example, or bare small numbers (3, 4, 4, 5 →
+  mean 4, variance 0.5). A real-world setting may appear as a one-line bridge at most; then the
+  slide's symbols take over.
+- **"Mechanism breaks in situation X" points** (BatchNorm with a small batch, vanishing gradients
+  in a deep net): keep a running story, as described next.
+
+Either way, **every element the example brings in must be used by the concept**. Before Q1, count
+what the reader must hold (objects, rules, table columns, quantities). If there are more than 3
+new ones, cut the example down. Interesting but unused details hurt learning
+[Sundararajan & Adesope, 2020]. A note has **at most one story**, and it is never re-set
+mid-note.
+
+**One running scenario per mechanism topic, from start to end.** A topic that spans several lessons (e.g.
 BatchNorm: why normalize → γ/β → small batches → inference → other norms) is taught through **one**
 story that every lesson continues, e.g. a cat classifier whose layer 1 outputs 2, 4, 6, 8 on four
 training images and whose layer 2 learned "above 5 means cat". Each lesson moves the same story
@@ -89,7 +150,7 @@ announced. Reuse the story's objects instead of new toy data; the last lesson ca
 first. Knowledge points chain; that is learning, not rote filling.
 
 **The user chooses the story.** A story works only if the learner can picture it and cares about
-it, so never impose one. Before a multi-lesson topic starts, whether in a note (step 3) or live
+it, so never impose one. Before a multi-lesson mechanism topic starts, whether in a note (step 3) or live
 (Mode B), offer **2–3 candidate stories** with AskUserQuestion. Give each one a one-line premise,
 the objects and numbers it will use, and which later lessons it covers well (e.g. "cat classifier
 on 4 photos: covers drift, small batches and deployment"; "exam-score curve across 4 classes";
@@ -125,7 +186,12 @@ heading to an unrelated one.
    failure ("layer 2 had learned 'above 5 means cat'; after one training step every image is above
    5"). Say where every number comes from and what it means. Never open with the term, a
    definition, a formula or bare numbers.
-2. **Discover it yourself.** Put the topic's **running scenario** (see below) into this lesson's
+2. **Explain how it works (default).** Explain the idea in connected prose, the way the explainers
+   gathered in 2b–2c do: the whole process end to end on one real example, then the step that
+   matters, with the simplifications flagged (see "Default: explain how it works"). At most one or
+   two check questions, placed after the explanation and never doing the explaining.
+   **Discover it yourself (opt-in, only on request):** put the topic's **running scenario** (mechanism points) or the
+   lesson's **bare numbers** (math/stat points; see "Story or bare numbers") into this lesson's
    new situation, let the reader **apply what they already learned** to it, watch it **fail inside
    the story**, and guide them, step by step, to design the fix on their own. The purpose of every
    number then comes from the story itself ("the GPU only fits 2 of our 4 images now, so what mean
@@ -190,19 +256,19 @@ note, or reads it days later, must never meet an unexplained word. Examples: a q
 
 **Uniform shape.** Bad, uneven layout makes a learner give up. Every `###` lesson has the same
 labelled blocks in the same order (the lesson unit in step 5), the same heading pattern, and a
-similar length and number of questions (3–5). Split an oversized knowledge point into two lessons
+similar length and number of questions (0–2 by default, 3–5 with discovery on). Split an oversized knowledge point into two lessons
 and merge crumbs into one; do not let one lesson sprawl while the next is two lines.
 
-**When unsure how to teach something, look up how the best teachers do it.** Before writing a
-point whose teaching path is unclear, search for how recognised teachers explain it (Stanford
+**Look up how the best teachers do it.** Steps 2b–2c do this for the lecture as a whole. Also,
+before writing a point whose teaching path is still unclear, search for how recognised teachers explain it (Stanford
 CS231n notes, d2l.ai, distill.pub, 3Blue1Brown, Andrej Karpathy's lectures, the original paper's own
 intuition section) and adapt their scenario or picture to the arc. What is borrowed follows the
 grounding rules (step 6b): cite it author–year (e.g. [Ioffe & Szegedy, 2015]) in the house-style supplement format.
 
 **Engineering vs pure math.** For engineering topics (networks, training, systems) steps 1–2 are
-always a practical scenario. For pure math (linear algebra, probability, proofs) more abstraction
-is acceptable, but step 2 still starts from something computable by hand (a 2×2 matrix, one fair
-die) before the general statement.
+a practical scenario where a mechanism breaks. For math and statistics (linear algebra,
+probability, proofs) step 2 starts from bare numbers computable by hand (a 2×2 matrix, the values
+3, 4, 4, 5, one fair die) before the general statement, with no story around them.
 
 **Coverage.** The arc is how the slides are taught, not a replacement for them: every knowledge
 point and every piece of content on the slides must appear (steps 3–4 carry it), in slide order
@@ -212,8 +278,9 @@ When the reader asks "what is this for?", answer with step 1 and step 4 (the pro
 what it is used for), not with a restatement of the formula.
 
 **Mode A: while writing a note.** Each `###` lesson follows the arc (see the lesson unit in step 5
-and the template). Step 2's questions are `> [!question]-` "Question k" folds, each holding the
-answer plus a one-line takeaway, and the prose between them carries the reader forward.
+and the template). By default step 2 is explanatory prose. With discovery on, step 2's questions
+are `> [!question]-` "Question k" folds, each holding the answer plus a one-line takeaway, and the
+prose between them carries the reader forward.
 
 **Mode B: explaining an existing note interactively** (the user wants to learn or review a section,
 or says "you ask, I answer"). Read the section first. No slide prep and no publishing are needed.
@@ -221,7 +288,7 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
 - Open with the gist (see "Gist first"): one familiar example going in and coming out, and why it
   matters, in a few plain sentences. Start questions only after the user can say what the thing
   does. When the user says they are lost, go back to the gist, never to a shorter overview.
-- At the start of a new multi-lesson topic, let the user choose the running story (2–3 candidates
+- At the start of a new multi-lesson mechanism topic, let the user choose the running story (2–3 candidates
   via AskUserQuestion, one recommended, "Other" for their own). If the lesson has a slide figure
   that is the concept, show it early and ask on it.
 - Before the first question of a section, name its prerequisites in one line. If the `Reader:`
@@ -229,8 +296,8 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
   note or slides use it; otherwise offer it ("this needs matrix multiplication; a 2-minute
   refresher first?").
 - Step 1 in a few plain sentences, then the roadmap of step 2 ("4 small questions, one at a time").
-- Before the first question, move the topic's running scenario into the new situation and let the
-  user try what they already know on it (step 2 of the arc); no separate "purpose / mapping" box.
+- Before the first question, move the topic's running scenario into the new situation (math/stat
+  points: give the bare numbers instead) and let the user try what they already know on it (step 2 of the arc); no separate "purpose / mapping" box.
   When resuming mid-chain, recap where the story stands in a line, not just the open question.
 - Ask **one question per turn** and wait for the answer. Live questions follow the same
   question-writing rules as written ones (step 5). If the note's own question breaks them (hidden
@@ -250,7 +317,9 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
     right answer (after x·sin(1/x): "is x³·sin(1/x) differentiable at 0?"). A good restatement
     with a wrong prediction means a link is missing; find which one.
   Correct the specific missing link, not the whole explanation.
-- After the chain, do steps 3–5 in prose, then offer the next knowledge point.
+- After the chain, do steps 3–5 in prose. Then, before offering the next knowledge point, ask the
+  user to explain this one in their own words (what it is, what it solves, how it works) and
+  grade it link by link as above.
 - Do long arithmetic yourself (run it); never ask them to multiply decimals.
 - If they drift to another topic and come back, re-post the open question verbatim.
 - At the end, say what they can now do, and record progress (questions done, questions still open)
@@ -278,7 +347,9 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
   If still ambiguous, ask the user with AskUserQuestion.
 - Scripts (run with `python`, or `python3` where that is the name; needs `pymupdf`): `<skill>/scripts/`
   - `prep_slides.py` — slide text, overview sheets, screenshots
-  - `svg_anim.py` — build / lint / preview animated SVGs (needs Chrome or Edge for `frames`)
+  - `svg_anim.py` — build / lint / preview / collision-audit SVGs (needs Chrome or Edge for `frames`, `audit`)
+  - `audit_figure_collisions.py` — vendored unmodified from Yuan1z0825/nature-skills @2a20e4a
+    (Apache-2.0, `LICENSE-nature-skills.txt`); called by `svg_anim.py audit`
   - `lint_note.py` — house-style check (pages, supplements, citations, figure captions)
   - `publish_note.py` — safe write into the vault + embed check
   - `mindmap.py` — optional course mind map
@@ -337,10 +408,17 @@ python <skill>/scripts/prep_slides.py prep "<pdf>" "<work>" [--pages A-B]
 ### 2b. Borrow the teaching path from explainer videos (default; skip if none found)
 Good teachers have already found the shortest way into most topics, and the slides rarely show
 it. Before planning, find out how they open the topic:
-1. WebSearch for explainer videos on the lecture's core topic on YouTube and Bilibili, e.g.
-   `<topic> explained` and `<中文主题> 讲解 bilibili`. Collect the candidate URLs.
-2. Rank the candidates and keep the top **1–2**. The rule is most views first, then most
-   favourites; ignore every other number (likes, comments, upload date, channel size):
+1. WebSearch YouTube and Bilibili for three kinds of video on the lecture's core topic:
+   - **Explainers:** `<topic> explained`, `<中文主题> 讲解 bilibili`.
+   - **University lectures:** `<topic> lecture MIT OpenCourseWare`, `<topic> Stanford lecture`
+     (official uploads have captions).
+   - **Engineer walkthroughs:** `<topic> from scratch`, `<topic> implementation walkthrough`,
+     `<中文主题> 从零实现` (practitioners who build the thing while explaining it).
+   Collect the candidate URLs, tagged by kind.
+2. Keep the most-viewed video of **each kind** as the shortlist (up to 3), so a well-made
+   engineer video is not crowded out by a famous channel's view count. Within a kind the rule
+   is most views first, then most favourites; ignore every other number (likes, comments,
+   upload date, channel size):
    ```bash
    python <skill>/scripts/video_transcript.py --stats <url> <url> ... <video flags>
    ```
@@ -359,20 +437,84 @@ it. Before planning, find out how they open the topic:
    which may also name the Python to run the script with; Bilibili
    subtitles and Bilibili `--stats` need `--cookies` of a logged-in account. If no video works,
    note it in `plan.md` and plan from the slides alone.
+   A full course lecture (40–80 min) covers several topics: read only the stretch on this
+   lecture's topic and note its `[m:ss]` range.
 4. Distill each transcript into `plan.md`, a few lines per video:
    - **Hook:** the first familiar example the teacher uses.
    - **Essence:** the one sentence that states what the idea is.
    - **Order:** which ideas come in which order.
    - **Skipped:** what the teacher leaves out at first.
    - **Analogies.**
-5. Use them for the gist and the order of lessons, but keep the slides' content and coverage.
-   Cite each video you draw on in References (channel or speaker, year, title, URL), and never
-   copy long passages.
+5. **The user picks** (2026-10-15, user's decision). Videos and written explainers (2c) are
+   offered together, in one AskUserQuestion call after 2c's search: one option per candidate,
+   with its kind, views or readership, which slide topics it covers, its opening example, and
+   what it has to reuse (figures, animations, tables). Mark the best fit as recommended: it
+   covers most of the slides' core ideas, opens with a concrete example, and its order can carry
+   the lessons; a famous name is not a reason. The user picks **1–2** (multiSelect). With two,
+   say which knowledge points each one carries; never splice two sources inside one lesson.
+   Write the picks in `plan.md`.
+6. **Distill the picked sources into the note, with small edits only** (see "Distilling a
+   picked source" below): their order, examples, wording, figures, animations and tables come
+   in as they are; the slides decide coverage, and the lla rules decide the frame. Cite every
+   piece in References (channel or speaker, year, title, URL, `[m:ss]` for video).
 
 For example, two explainers on conceptual metaphor both opened with one familiar line ("a summer's
 day", "a soft laugh"). They then gave the essence in one sentence ("understanding one kind of thing
 in terms of another"), then a family of similar examples, and only then the terms. Neither one
 did any calculation.
+
+### 2c. Borrow explanations from written explainers (default, always)
+Videos give the order into a topic. Written explainers give the wording for each knowledge point:
+how a good writer states the whole process, which example they pick, and which confusion they
+head off. Do this for **every** knowledge point (every `###` lesson), not only the core or
+unclear ones (2026-10-15, user's decision; this includes points fixed later in Mode B or on
+request, never explained from memory alone).
+1. WebSearch for blog posts, tutorial articles and study notes. Use English queries first
+   (`<topic> explained`, `<topic> intuition blog`, `<topic> tutorial`, `<topic> lecture notes`),
+   then Chinese (`<中文主题> 详解`, `<中文主题> 通俗理解`, `<中文主题> 学习笔记`). Keep Chinese
+   sources to about 20% of what you keep. Widely read sources come first: well-known authors
+   (Jay Alammar, Lilian Weng, Chris Olah, d2l.ai, the Hugging Face course, CS224n/CS231n notes),
+   pieces that are heavily cited or shared, and high-read Zhihu answers. Among those, prefer ones
+   from the past year, and add the year to the query when recency matters.
+2. WebFetch the best 2–3 per point and distill each into `plan.md` in a few lines:
+   - **Process:** how they state the whole thing end to end (what goes in, at which stage, what
+     comes out).
+   - **Example:** the example they use.
+   - **Confusions:** the misreadings they explicitly head off ("this is not bag-of-words";
+     "attention weights are soft, not one-to-one").
+   - **Wording:** any one sentence that says the idea better than the slides.
+3. **The user picks 1–2 sources**, together with the videos (2b step 5). Readership only built
+   the shortlist. Sources not picked may only supply a Confusions line or a fold. Two
+   explainers' examples spliced into one lesson make the reader map two setups.
+4. Write step 2 of each lesson by distilling the picked source (next block). The **Confusions**
+   lines feed the Fallacies and pitfalls blocks and the practice questions.
+If nothing usable turns up for a point, say so in `plan.md` and explain it from the slides.
+
+**Distilling a picked source** (2026-10-15, user's decision: a good teacher's explanation, kept
+close to the original, beats a fresh one written from scratch).
+- **Keep:** the source's order, its example, its sentences (translated into the note language
+  where needed, otherwise unchanged), its analogies, and its pictures: blog figures and tables,
+  and video frames grabbed at the moment the animation shows the point (`ffmpeg -ss <m:ss> -i
+  <video> -frames:v 1`, using the yt-dlp and ffmpeg from `local.md`). Download the video into
+  `<work>/` only for cutting frames and **delete it right after**; never keep source videos on
+  disk (2026-10-15, user's decision). The note keeps the link instead: every frame caption links
+  its timestamp (`[7:15](https://www.youtube.com/watch?v=<id>&t=435s)`), every slide crop from an
+  outside deck links the page (`[CS224N p.19](<pdf url>#page=19)`), and every blog figure links
+  the post. A blog's own animation
+  (GIF/SVG) is saved as it is; a video animation that needs motion is rebuilt with `svg_anim.py`
+  following the source's layout, and says so in its caption.
+- **Small edits only:** switch to the slides' notation, cut parts the slides do not cover, add
+  the slides' points the source lacks, and flag simplifications. Every slide point still
+  appears (Coverage).
+- **Frame:** the lla rules still hold around it (gist, problem → explanation → slide concept →
+  uses → pros/cons, In your own words, Fallacies, verify.py for every number, one format per
+  element). A source passage that breaks a rule (a term before its explanation, a conclusion
+  before its mechanism) is the one place to edit more.
+- **Credit:** every borrowed figure, frame or table gets a caption `*图 k · <author/channel,
+  year> · …*` and a References entry; a borrowed passage ends in `（改写自 [Author, Year]）`.
+  Attachment names follow step 4 with the source in the slug, e.g.
+  `part3-transformer-alammar-qkv.png`. These notes are for the user's private study vault;
+  if a source's licence forbids reuse, link the figure instead of copying it.
 
 ### 3. Plan the teaching path (before writing a single paragraph)
 Write `<work>/plan.md`:
@@ -385,8 +527,10 @@ Write `<work>/plan.md`:
 2. For each knowledge point, plan its arc:
    - **Problem** — what goes wrong without it, as a picturable failure with numbers whose meaning
      is stated.
-   - **Discovery scenario** — the small setting and its 3–5 questions (Q1 counting only; each
-     next question changes one thing).
+   - **Explanation path** (default) — the end-to-end process in 2–3 lines (input → stage →
+     output), the real example, the simplifications to flag, and the confusions from 2c to head
+     off. Only with discovery on: the **discovery scenario**, meaning the small setting and its
+     3–5 questions (Q1 counting only; each next question changes one thing).
    - **Slide concept** — the slides' name, definition, formula and every point the slides make.
    - **Connections and uses** — which earlier points it builds on, what it is used for in practice;
      an everyday analogy if it stays abstract (and where the analogy breaks).
@@ -396,8 +540,10 @@ Write `<work>/plan.md`:
    - **Visual** — slide screenshot, static figure, animated SVG, or none (see 4b). Flag slide figures
      that *are* the concept; they come in early and carry questions (see "Let a telling slide figure
      do the explaining").
-3. **Running stories** — group the knowledge points into topics. For every multi-lesson topic,
-   draft 2–3 candidate stories and let the user pick (see "The user chooses the story") before
+3. **Story or bare numbers** — mark each knowledge point *math/stat* or *mechanism* (see "Story
+   or bare numbers"). Math/stat points get the slide's example or bare numbers; write them down
+   here with the element count before Q1 (≤ 3 new). Group the mechanism points into topics. For
+   every multi-lesson mechanism topic, draft 2–3 candidate stories and let the user pick (see "The user chooses the story") before
    writing. Record the chosen story and its numbers here. Then run the **failure check**: list
    the failure every lesson of the topic must show and make sure the story contains what it needs.
    For example, "vanishing gradients make a deep net useless" needs two classes, so that "the
@@ -429,6 +575,10 @@ Write `<work>/plan.md`:
      §k", "assumed" or "see <source>".
 6. **New-term budget** — mark the lessons that introduce several new terms and split them so each
    `###` lesson introduces **at most 1–2 new terms**.
+7. **Fallacies and the whole-system case** — per `##` part, 2–3 fallacy/pitfall cards:
+   `claim as the learner holds it | counterexample + its source | lesson that teaches the cause`.
+   For the note, the Putting it all together system: its name, the config source, and which
+   lessons it walks through (every core lesson should appear). Yardsticks from `local.md`, if any.
 
 ### 4. Pick and cut screenshots
 Pick slides whose picture carries meaning the text can't (architectures, plots, worked tables,
@@ -513,10 +663,15 @@ shorter than 1% of the cycle.
    ```bash
    python <skill>/scripts/svg_anim.py lint "<work>/anim/gd-steps.svg"
    python <skill>/scripts/svg_anim.py frames "<work>/anim/gd-steps.svg" "<work>/anim/frames" --times 0.5,3.5,5.5,7.5
+   python <skill>/scripts/svg_anim.py audit "<work>/anim/gd-steps.svg" --times 0.5,3.5,5.5,7.5
    ```
    **Read the `-strip.png`** and check each frame against the note: the dot is where the numbers
    say, captions match, nothing overlaps or is cut off, text is readable. Fix and repeat.
-   Pick `--times` just after each key moment, not mid-glide.
+   Pick `--times` just after each key moment, not mid-glide. `audit` (static SVGs too, any
+   hand-written SVG) flags every label crossed by a line or overlapping another label at each
+   moment; a FAIL is fixed, not argued away. The eye misses these: on its first run it caught a
+   contour line through a label that had passed visual review. It cannot see text drawn as paths
+   (matplotlib's default SVG output), so keep labels as `<text>`.
 3. Rules the lint enforces (Obsidian shows `![[x.svg]]` as an `<img>`: no scripts, no clicks,
    no external files, the theme cannot restyle it):
    - SMIL `<animate>` only (no CSS `@keyframes`, no JS, no `begin="click"` / chained `.end`);
@@ -546,21 +701,74 @@ Follow `references/note-template.md` for frontmatter, skeleton and labels, and t
 
 #### The lesson unit (every `###` knowledge point follows the arc)
 1. **The problem** — what goes wrong without it; plain words; numbers explained before use.
-2. **Discover it yourself** — no heading or bold label in the note (a "Work it out yourself" label
-   reads as stiff). The problem paragraph ends in one bridging sentence that moves the story into
-   the new situation and hands the reader the first question; then the Question k folds, with short
-   prose between them.
+2. **How it works** (default) — no heading or bold label. Connected prose that walks the whole
+   process end to end on one real example, then the key step, with simplifications flagged on the
+   spot; at most 1–2 check questions after it. **Discover it yourself** (only with discovery on)
+   also has no heading or bold label (a "Work it out yourself" label reads as stiff). The problem
+   paragraph ends in one bridging sentence that moves the story into the new situation and hands
+   the reader the first question; then the Question k folds, with short prose between them.
 3. **The concept from the slides** — name (note language + English), definition, formula with
    every symbol mapped to the numbers from step 2; then **In professional terms** (how a
    practitioner says it, note language + English).
 4. **Understand it fully** — connections to earlier points, what it solves, what it is used for;
    optional Analogy callout; slide screenshots / animations with their "what to watch" lines.
 5. **Pros and cons → next** — the trade-off, ending in the question the next lesson answers.
-6. (optional) Deep dive fold — derivations, proofs, edge cases, extra variants.
-7. (optional) `> [!warning]` Common pitfall — only real, common confusions.
+6. **In your own words** (every lesson, Feynman technique) — the lesson's last block. The user
+   asked for it on 2026-10-14: after each lesson, the reader sums it up by explaining it in their
+   own words. It is a `> [!question]-` fold. The reader closes the note and explains the concept
+   to a friend who has not studied it, in 3–5 plain sentences: what it is, what problem it solves,
+   and how it works from input to output. Nested inside are two folds. The first lists the 3 key
+   links as checkboxes, one per part of that ask. The second, "One way to say it", is a reference
+   explanation of at most 5 everyday sentences, with at most 1 term and no formula, that contains
+   every key link. This block replaces a written summary, so do not also add a recap paragraph.
+   Format in `references/note-template.md`.
+7. (optional) Deep dive fold — derivations, proofs, edge cases, extra variants.
+8. (optional) `> [!warning]` Common pitfall — a short usage caution (notation, a wrong call
+   order). A *belief* that a counterexample can refute goes into the part's Fallacies block below.
 
 A very small point (one slide bullet that refines the previous lesson) may shrink to steps 1, 3
 and 5 in a few sentences, but it still starts from the problem, never from the term.
+
+#### Above the lesson: two blocks borrowed from Hennessy & Patterson
+*Computer Architecture: A Quantitative Approach* ends every chapter the same way: a real machine
+analysed with the chapter's ideas ("Putting It All Together"), then the misbeliefs and mistakes
+of real designers, each refuted with numbers ("Fallacies and Pitfalls"). Notes take both. Why:
+learning-design principles 19–20.
+
+**Fallacies and pitfalls, at the end of every `##` part** (before its Pause fold). 2–3 items,
+each a `> [!failure]` callout in the format of `references/note-template.md`:
+- The title **states the wrong idea as a confident claim**, the way a learner would hold it
+  ("Fallacy: more parameters always make a stronger model"). Never "Note that X is not Y".
+  A **fallacy** is a wrong belief; a **pitfall** is an easy wrong *action* ("Pitfall: comparing
+  two models' scores when only one was instruction-tuned").
+- The body has three parts, in this order: the **counterexample**, a concrete case with numbers
+  whenever the claim is about a quantity (slides, a real run, or a cited paper; checked by
+  `verify.py`), **why the claim fails** as one causal chain
+  that links back to the lesson that teaches the cause, and the **correct statement** in the
+  note language and in English.
+- Sources of items, best first: misconceptions the real reader showed (session notes,
+  learning-design), the 2c **Confusions** lines, the slides' own warnings, errors in the slides.
+  Never invent a misconception nobody holds just to fill the block; fewer items is fine.
+- Everything beyond the slides is grounded (6b) and cited.
+
+**Putting it all together, once per note** (its own `##` part, just before Review and practice):
+one **real, named system** (a model with its published config, a real training run, the user's
+own assignment run), walked through every core lesson of the note in lesson order. Each step
+names the lesson it uses (with a heading link), applies it to the system's real numbers
+(formula → substitution, as everywhere), and says what that number means for the system. It
+ends with the cost or limit that the numbers expose and that the next note addresses. Rules:
+- The system's numbers come from its paper, model card or a real run, cited; every derived
+  number is in `verify.py`. If a figure is a plausible estimate rather than published, say so.
+- It applies what was taught; it introduces no new concept. A step that needs one is a gap in
+  a lesson; fix the lesson.
+- Prefer a system the slides or the running story already use. One system per note, not a tour.
+
+**Yardsticks (optional, per course).** If the `# Yardsticks` section of `local.md` has a line for the course
+(a few quantities every method of the course can be measured in, like H&P's CPU performance
+equation and Amdahl's law), then step 5 of each lesson states the trade-off in those units with
+numbers wherever the slides or a source give them ("GQA with 8 KV heads: KV cache 4× smaller"),
+and Putting it all together reports each one. No line → skip; concept-heavy courses have no
+useful yardsticks.
 
 #### Writing rules
 - **Explain, do not summarise.** Write connected explanatory prose — "first…, then…, so…" — as a
@@ -647,7 +855,8 @@ and 5 in a few sentences, but it still starts from the problem, never from the t
   - d2l-style author–year citations resolving to `## 参考文献`;
   - figures, tables and equations numbered by section: `*图 14.3 · p.58 · …*`, `**表 14.3 · …**`,
     `\tag{14.3}`;
-  - the note ending in 本讲小结 → 练习 → 术语中英对照 → 参考文献 → navigation;
+  - each `##` part ending in its `### 误区与陷阱` block, then its Pause fold;
+  - the note ending in 串起来看 → 本讲小结 → 练习 → 术语中英对照 → 参考文献 → navigation;
   - fixed callout titles.
 
   Never improvise a format. If an element is missing from the house style, add it there first.
@@ -699,19 +908,43 @@ question must pass these rules:
   or who holds a known misconception, would answer it wrongly (a hinge question). If the answer
   can be read straight off the prompt, it is a sentence of prose, not a question. Its question
   card (step 3.4) names the target.
-- **Inside the story.** Every question uses the topic's running story and its objects. If a
-  question needs a setting the story cannot give, fix the story in the plan instead of improvising.
+- **Inside the lesson's example.** Every question uses the topic's running story and its objects
+  (mechanism points) or the lesson's bare numbers (math/stat points). If a question needs a
+  setting the story cannot give, fix the story in the plan instead of improvising.
 - **Answer length follows the inference steps, not the topic's importance.**
   - One step: one line plus the takeaway.
   - Two or more steps: one labelled sub-step per inference (① where the gradient comes from →
     ② one step moves η × gradient → ③ 1,000 steps), each with its numbers.
   - An operation the reader meets for the first time (a matrix product, a norm, scientific
-    notation) is worked in full the first time it appears. Later uses may give only the result.
+    notation) is explained in full the first time it appears. Later uses may skip the
+    explanation, but still show formula → substitution (next rule).
   - Never answer with the shape or the final number alone when the reader cannot yet produce it.
 - **Answers show the steps, not a compressed formula.** Give each step in words with its numbers,
   e.g. "per image: 2 groups; 2 images → 2 × 2 = 4 groups; each group: 2 channels × 4 positions =
   8 numbers". When several cases are compared, end with a small table (case → what is fixed →
   what is averaged → numbers per group → number of groups).
+- **Every calculation: the formula first, then the numbers, and the formula again at every
+  step.** This holds for worked examples, answers and live chat alike. Write the original formula,
+  then substitute the numbers line by line, the way a person computes by hand. At the next step,
+  write the same formula again before substituting:
+  ```
+  Step 1:  s_t = 0.9 × s_{t−1} + 0.1 × g_t
+           s_1 = 0.9 × 0 + 0.1 × (−40)
+               = 0 + (−4)
+               = −4
+  Step 2:  s_t = 0.9 × s_{t−1} + 0.1 × g_t
+           s_2 = 0.9 × (−4) + 0.1 × (−36)
+               = −3.6 + (−3.6)
+               = −7.2
+  ```
+  No closed forms, compressed sums or matrix shorthand in place of these lines. The repetition is
+  the point: the reader cannot memorise formulas by rote, but remembers one seen filled in again
+  and again, and sees where every number comes from. In notes the lines are typeset (`$$`,
+  `\begin{aligned}`); in chat they are plain Unicode in a code block.
+- **Numbers, not proofs.** Plug-in steps are welcome; algebraic derivations are not. When the
+  "why" is a derivation (why Adam's two bias corrections do not cancel), state the conclusion in
+  one plain sentence, then show at most a short numeric demo. The proof goes into a Deep dive fold,
+  or into chat only when asked.
 - **Numbers keep their roles.** If a later lesson needs the same numbers in a different role,
   first check whether the story itself can supply it (same four images, smaller batch). If the
   role must change, say so in the story, never silently.
@@ -738,8 +971,9 @@ adds beyond them. So, while writing:
    `references/note-template.md`).
 4. If you cannot confirm it, drop it or mark it `(to verify: …)`; never state it as fact from memory.
 
-### 6d. Student test of the questions (default, always)
-`verify.py` proves the answers are right, not that the questions can be understood. So before
+### 6d. Student test of the questions (optional — only when the user asks)
+Off by default since 2026-10-14 (user's decision; with question chains and calculation questions
+off, few questions are left to test). When the user asks for it: `verify.py` proves the answers are right, not that the questions can be understood. So before
 publishing, launch **one fresh subagent on a weak model**. A weaker reader stumbles where a learner
 would, and it is cheap. Which model to use is the user's choice: the `Student model:` line in
 `local.md`.
@@ -891,21 +1125,37 @@ overlapping, duplicated content).
 ## Checklist before publishing
 - [ ] Frontmatter complete, including `lang`; `source_pdf` is the real file; `pages` / `pdf_page_count` correct
 - [ ] The note is in the chosen language and uses that language's labels throughout
-- [ ] Every PDF page in range is covered (plan.md outline ticks off)
+- [ ] Every PDF page in range is covered (plan.md outline ticks off), and `lint_note.py`'s page
+      check passes: each page is cited as (p.N) in the teaching text (the scope box and the
+      reading-route table do not count) or listed in `pages_skipped` with its reason (cover,
+      section title, Q&A, references). Before skipping a page, look at its image: a page with no
+      extractable text may be a full-page figure, not a blank
 - [ ] Easy → hard: every lesson's first sentence is readable using only earlier lessons
 - [ ] Every abstract concept has an analogy and/or tiny calculation next to it
-- [ ] Every lesson walks the arc: problem → self-discovery questions → slide concept → analysis,
-      connections and uses → pros/cons that lead into the next lesson; transitions read smoothly
+- [ ] Every lesson walks the arc: problem → how it works (default) or self-discovery questions
+      (only if the user asked) → slide concept → analysis, connections and uses → pros/cons that
+      lead into the next lesson; transitions read smoothly
+- [ ] Every lesson states its whole process end to end (input → stage → output) on a real example
+      before any detail; every simplification that changes how the mechanism looks is flagged
+      where it occurs; no conclusion appears before the mechanism that explains it
+- [ ] Written explainers were searched (2c): English-first, ≈ 20% Chinese, widely read first; the
+      best 2–3 per core point distilled in `plan.md` (process, example, confusions, wording) and cited
+- [ ] The user picked 1–2 sources (videos and blogs offered together); the note distills them
+      with small edits only, their figures / frames / tables credited in captions and References
 - [ ] The note opens with an At a glance block; it and each part's first lines give the gist (one
       familiar example in → out, why it matters, ≤ 3 sentences, ≤ 1 term) before any question,
       table or calculation; details that do not change the gist are in tables, folds or the cram section
-- [ ] Explainer videos were searched on YouTube and Bilibili (2b), the top 1–2 by views then
-      favourites were kept; the ones used are distilled in `plan.md` and cited, or
-      `plan.md` says none were usable
+- [ ] Explainers, university lectures and engineer walkthroughs were searched on YouTube and
+      Bilibili (2b), the most-viewed of each kind was distilled in `plan.md` and offered to the
+      user with the blogs (step 5), and cited, or `plan.md` says none were usable
 - [ ] No section opens with a term, definition, formula or bare numbers
-- [ ] The user chose each multi-lesson topic's running story (2–3 candidates offered); slide
+- [ ] Math/stat points use the slide's example or bare numbers, no story; at most one story per
+      note, never re-set; every element an example brings in is used, ≤ 3 new ones before Q1
+- [ ] Every calculation writes the formula, then substitutes step by step, rewriting the formula
+      at each step; no proofs in the main line
+- [ ] The user chose each multi-lesson mechanism topic's running story (2–3 candidates offered); slide
       figures that are the concept come in early, are read for the reader and carry questions
-- [ ] Each multi-lesson topic runs on one scenario from first lesson to last; every lesson moves it
+- [ ] Each multi-lesson mechanism topic runs on one scenario from first lesson to last; every lesson moves it
       into a new situation, applies what was learned, shows it fail, then fixes it; no number changes
       role silently; each chain ends with result → consequence → conclusion
 - [ ] Every lesson ends its concept block with In professional terms; plain explanations are
@@ -913,7 +1163,7 @@ overlapping, duplicated content).
 - [ ] Concept blocks: black box first, one example through every step, outputs shown, one idea per
       sentence, pages cited once, and the details that do not change the main picture in one 深入 fold
 - [ ] Uniform shape: every `###` lesson has the same blocks in the same order, similar length and
-      3–5 questions; no sprawling or two-line lessons
+      number of questions (0–2 by default, 3–5 with discovery on); no sprawling or two-line lessons
 - [ ] Points whose teaching path was unclear were checked against how recognised teachers explain
       them, with sources
 - [ ] Technical points are stated in the note language and in English (per `lang`)
@@ -924,6 +1174,9 @@ overlapping, duplicated content).
 - [ ] Every knowledge point and piece of content on the slides appears somewhere
 - [ ] No summary-style lesson (a bullet list introducing several new terms); ≤ 2 new terms per `###`
 - [ ] Hard extras are in Deep dive folds; skipping all folds still leaves a complete explanation
+- [ ] Every `###` lesson ends with an In your own words (Feynman) fold: what it is / what it
+      solves / how it works, 3 checkbox key links, and a ≤ 5-sentence plain "One way to say it"
+      that contains every link
 - [ ] A Pause check after each part: a closed-book why-question, a fold of 3–4 checkable key
       links, and one prediction question on a new case with a single right answer
 - [ ] Every screenshot / animation embed has a "what to look at" line and the file exists;
@@ -931,8 +1184,8 @@ overlapping, duplicated content).
       static fallback (table/list of the same numbers)
 - [ ] Every numeric claim, answer and animation number checked by `verify.py`
 - [ ] Every question follows the question-writing rules (one meaning per symbol across the note,
-      self-contained, one ask, counting unit and procedure stated, stepwise answer), and the
-      student test (6d) ran with every flagged question fixed
+      self-contained, one ask, stepwise answer); no calculation questions unless the user asked
+      (`--calc`); the student test (6d) ran only if the user asked
 - [ ] Every question has a card in `plan.md` (target, story object, inference steps); none is
       too easy, off-story, or answered with a jump the `Reader:` profile cannot follow
 - [ ] Every beyond-slides claim (supplements, paper attributions) was checked online and cites an
@@ -941,9 +1194,16 @@ overlapping, duplicated content).
       reference list, figure captions)
 - [ ] (only if the user asked for 6c) evaluator loop ended with `pass` or ≤ 3 rounds
 - [ ] ≥ 10 practice questions that check understanding, not exam tricks (≥ 60% "what does it
-      solve / why", ≥ 20% calculation, ≥ 2 connecting two ideas), answers in Show answer folds
+      solve / why", ≥ 2 connecting two ideas, ≥ 2 heading off a confusion found in 2c; no
+      calculation unless `--calc`), answers in Show answer folds
 - [ ] Every set of parallel items (numbered lists, model families, competing methods) ends in a
       comparison table, and 本讲小结 repeats or links each one instead of listing bare names
+- [ ] Every `##` part ends with 2–3 Fallacies and pitfalls callouts (claim stated as the learner
+      holds it → counterexample with verified, sourced numbers → causal chain linking the lesson
+      → correct statement); none invented just to fill the block
+- [ ] One Putting it all together part: a real, named system with cited config, walked through
+      every core lesson in order with real numbers, no new concepts, ending in the limit the next
+      note addresses; yardsticks reported if `local.md` sets them
 - [ ] Glossary table and the Self-check-after-studying tip at the end
 - [ ] Links to previous/next week notes if they exist (`[[WEEK 4]]`)
 - [ ] LaTeX renders: every multi-row `bmatrix`/`cases` separates rows with `\\` (a lone `\`
