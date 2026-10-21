@@ -246,4 +246,4 @@ teach a section of an existing note.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE). Exception: `scripts/audit_figure_collisions.py` is copied unmodified from [nature-skills](https://github.com/Yuan1z0825/nature-skills) and stays under Apache-2.0 ([scripts/LICENSE-nature-skills.txt](scripts/LICENSE-nature-skills.txt)).

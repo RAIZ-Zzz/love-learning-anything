@@ -21,6 +21,8 @@ CLI:
   frames SVG OUT [--n 6 | --times 0,2.5,5] [--width 640]
                                        render moments of the animation with headless Chrome
                                        -> OUT/<name>-tX.png and OUT/<name>-strip.png (look at it!)
+  audit  SVG [--n 6 | --times 0,2.5,5]  print each moment to PDF and run audit_figure_collisions.py
+                                       (text crossed by a line / text on text); exit 1 on any FAIL
 """
 import argparse
 import json
@@ -406,21 +408,38 @@ def find_browser():
     sys.exit("no Chrome/Edge found; set $CHROME")
 
 
+def _moments(args):
+    """Read the SVG, its pixel size (width/height, else viewBox) and the times to inspect."""
+    text = Path(args.svg).read_text(encoding="utf-8")
+    root = ET.fromstring(text)
+    cycle = float(root.get("data-cycle") or 0)
+    vb = [float(v) for v in (root.get("viewBox") or "").replace(",", " ").split()] or None
+    w = float(root.get("width") or (vb[2] if vb else args.width))
+    h = float(root.get("height") or (vb[3] * w / vb[2] if vb else w * 9 / 16))
+    if args.times:
+        times = [float(t) for t in args.times.split(",")]
+    else:
+        n = max(args.n, 1) if cycle else 1  # a static SVG has one moment
+        times = [round(cycle * i / (n - 1), 3) if n > 1 else 0 for i in range(n)]
+        times[-1] = max(times[-1] - 0.01, 0)  # just before the loop restarts
+    return text, cycle, w, h, times
+
+
+def _paused_html(path, text, w, h, t):
+    """Write an HTML page showing the SVG frozen at time t, sized exactly w x h (also as the PDF page)."""
+    path.write_text(
+        '<!doctype html><meta charset="utf-8">'
+        f'<style>@page{{size:{w:g}px {h:g}px;margin:0}}</style><body style="margin:0;background:#fff">'
+        f'<div style="width:{w:g}px;height:{h:g}px;overflow:hidden">{text}</div><script>'
+        'var s=document.querySelector("svg");s.pauseAnimations();'
+        f's.setCurrentTime({t});</script></body>', encoding="utf-8")
+
+
 def frames(args):
     import pymupdf  # only needed for the strip
 
     svg_path = Path(args.svg)
-    text = svg_path.read_text(encoding="utf-8")
-    root = ET.fromstring(text)
-    cycle = float(root.get("data-cycle") or 0)
-    w = float(root.get("width") or args.width)
-    h = float(root.get("height") or w * 9 / 16)
-    if args.times:
-        times = [float(t) for t in args.times.split(",")]
-    else:
-        n = max(args.n, 1)
-        times = [round(cycle * i / (n - 1), 3) if n > 1 else 0 for i in range(n)]
-        times[-1] = max(times[-1] - 0.01, 0)  # just before the loop restarts
+    text, cycle, w, h, times = _moments(args)
     out = Path(args.out).resolve()  # Chrome resolves --screenshot against its own cwd
     out.mkdir(parents=True, exist_ok=True)
     browser = find_browser()
@@ -428,11 +447,7 @@ def frames(args):
     shots = []
     for t in times:
         html = out / f"_{svg_path.stem}-t{t:g}.html"
-        html.write_text(
-            '<!doctype html><meta charset="utf-8"><body style="margin:0;background:#fff">'
-            f'<div style="width:{w:g}px;height:{h:g}px">{text}</div><script>'
-            'var s=document.querySelector("svg");s.pauseAnimations();'
-            f's.setCurrentTime({t});</script></body>', encoding="utf-8")
+        _paused_html(html, text, w, h, t)
         png = out / f"{svg_path.stem}-t{t:g}.png"
         subprocess.run([browser, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
                         f"--user-data-dir={profile}", f"--window-size={int(w)},{int(h)}",
@@ -458,6 +473,33 @@ def frames(args):
                       "frames": [str(p) for _, p in shots]}, ensure_ascii=False, indent=1))
 
 
+# ---- AUDIT ---------------------------------------------------------------------------------
+def audit(args):
+    """Collision check of every inspected moment. Labels that only appear mid-animation are covered too."""
+    svg_path = Path(args.svg)
+    text, cycle, w, h, times = _moments(args)
+    browser = find_browser()
+    auditor = Path(__file__).with_name("audit_figure_collisions.py")
+    work = Path(tempfile.mkdtemp(prefix="svgaudit-"))
+    worst = 0
+    for t in times:
+        html, pdf = work / f"t{t:g}.html", work / f"t{t:g}.pdf"
+        _paused_html(html, text, w, h, t)
+        subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                        f"--user-data-dir={work / 'profile'}", "--virtual-time-budget=1500",
+                        f"--print-to-pdf={pdf}", html.resolve().as_uri()], capture_output=True, timeout=60)
+        if not pdf.exists():
+            sys.exit(f"browser produced no PDF for t={t}")
+        r = subprocess.run([sys.executable, str(auditor), str(pdf)], capture_output=True, text=True,
+                           encoding="utf-8", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+        print(f"--- {svg_path.name} t={t:g}s")
+        print("\n".join(l for l in r.stdout.splitlines() if l.startswith(("[FAIL]", "summary", "verdict"))))
+        worst = max(worst, r.returncode)
+    # 1 = a label is crossed by a line or overlaps text (fix it); 2 = not auditable (e.g. no PyMuPDF).
+    # WARNs (text on a filled shape) are hidden: labels sitting on a tinted box are usually intended.
+    sys.exit(worst)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -471,6 +513,12 @@ def main():
     f.add_argument("--times")
     f.add_argument("--width", type=float, default=640)
     f.set_defaults(func=frames)
+    a = sub.add_parser("audit")
+    a.add_argument("svg")
+    a.add_argument("--n", type=int, default=6)
+    a.add_argument("--times")
+    a.add_argument("--width", type=float, default=640)
+    a.set_defaults(func=audit)
     args = parser.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
     args.func(args)
