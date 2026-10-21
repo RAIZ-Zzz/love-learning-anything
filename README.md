@@ -15,6 +15,11 @@ good tutor would bring it in: first the problem, then you try what you already k
 break, and only then the slides give the fix a name. It can also **tutor you live** on any
 section, one question at a time.
 
+The explanations are not written from the model's memory. For every idea, `lla` first looks up
+how good teachers already explain it (widely read blogs, tutorials and study notes, plus explainer
+videos when transcripts are available), lets you pick the best one or two, and distils them into
+the note with small edits only, citing each source.
+
 > [!WARNING]
 > **Please read before you rely on a note.**
 >
@@ -116,6 +121,11 @@ Full reasoning, the session notes that shaped each rule, and 31 references are i
 ## Features
 
 **Learning first**
+- **Explanations distilled from good teachers.** For every knowledge point it searches widely read
+  blog posts, tutorials and study notes (English first, about 20% Chinese) and, if transcripts are
+  available, explainer videos and university lectures. It shows you the shortlist with each
+  source's opening example, you pick 1–2, and their order, examples, wording and figures go into
+  the lesson with small edits only, each cited (`SKILL.md` steps 2b–2c).
 - **Taught at your level.** On first use, `/lla` asks about your background: new to the subject,
   related but rusty, solid, or your own description. The answer sets how much each step is spelled
   out, and the built-in student test checks the questions as *you*, not as a generic reader.
@@ -205,8 +215,9 @@ Notes go to `Lecture Notes/<course>/` inside the vault; create one folder per co
   live on this machine. It is git-ignored. Without it, the skill asks for the PDF path and offers
   to create the file.
 - The Obsidian plugin **Mindmap NextGen**, only for the optional course mind map.
-- Explainer-video transcripts, so the skill can borrow how good teachers open a topic. Without
-  them, that step is skipped.
+- Explainer-video transcripts, so the skill can also borrow how good teachers open a topic on
+  video. Without them, that step is skipped and only written explainers (blogs, tutorials, study
+  notes) are used.
   - `pip install youtube-transcript-api yt-dlp faster-whisper` and `ffmpeg` on the machine.
   - For speech recognition on an NVIDIA GPU (videos without subtitles):
     `pip install nvidia-cublas-cu12 "nvidia-cudnn-cu12==9.*"`. Without a GPU it runs the small
