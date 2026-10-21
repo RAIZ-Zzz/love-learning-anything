@@ -15,6 +15,11 @@ Checks the mechanical parts only:
   6. a link to a section targets the heading: [[WEEK 5#14. …|WEEK 5 §14]], not "[[WEEK 5]] §14"
   7. a slide picture the text points at ("p.8 的图", "p.64 是一张…照片") is embedded in the note
   8. no display math in a callout title, and no math shorthand (diag(...), sqrt(...), [[1,2],...])
+  9. page coverage: every page in the frontmatter `pages` range is cited somewhere as (p.N) or
+     listed in `pages_skipped` (title, agenda, Q&A pages), so no slide is skipped silently.
+     Multi-PDF notes (`pages: "W02 44-69; W04 1-79"`) also need `page_scope: "1-2=W02; 3-6=W04"`
+     (which `##` parts cite which PDF; the opening section counts as the first part; a prefix
+     like "W04 p.5" always wins; other decks such as "CS224N p.19" are ignored).
 Exits 1 and lists line numbers if anything fails.
 """
 import re
@@ -37,6 +42,91 @@ FIG_REF = re.compile(r"p\.\s?(\d+)[^。；\n]{0,15}?(的图|错觉图|示意图|
 CALLOUT_TITLE = re.compile(r"^(>\s*)+\[!\w+\]")
 MATH_SHORTHAND = re.compile(r"\\mathrm\{diag\}|\bdiag\s*\(|\bsqrt\s*\(|\[\[\s*-?\d")
 RESULT = re.compile(r"\*\*(计算结果：|运行结果：|Result:|Output:)\*\*")
+
+
+PCITE = re.compile(r"(?:([A-Za-z][A-Za-z0-9]*)\s+)?p\.\s?(\d+(?:\s*[–-]\s*\d+)?(?:\s*[,，、]\s*\d+(?:\s*[–-]\s*\d+)?)*)")
+PART = re.compile(r"^## (?:第([一二三四五六七八九十]{1,2})部分|Part (\d+)) · ")
+CN = {c: i for i, c in enumerate("零一二三四五六七八九")}
+
+
+def nums(s):
+    out = set()
+    for a, b in re.findall(r"(\d+)(?:\s*[–-]\s*(\d+))?", s):
+        out.update(range(int(a), int(b or a) + 1))
+    return out
+
+
+def labelled(s):
+    """'W02 44-69; W04 1-79' -> {'W02': {...}, 'W04': {...}};  '1-75' -> {'': {...}}"""
+    out = {}
+    for seg in filter(None, (x.strip() for x in s.split(";"))):
+        m = re.match(r"([A-Za-z]\w*)\s+(.*)", seg)
+        key, rest = (m.group(1), m.group(2)) if m else ("", seg)
+        out.setdefault(key, set()).update(nums(re.sub(r"\([^)]*\)", "", rest)))
+    return out
+
+
+def part_no(raw):
+    m = PART.match(raw)
+    if not m:
+        return None
+    if m.group(2):
+        return int(m.group(2))
+    s = m.group(1)  # 三 / 十 / 十二 / 二十
+    if s == "十":
+        return 10
+    if s[0] == "十":
+        return 10 + CN[s[1]]
+    if s[-1] == "十":
+        return CN[s[0]] * 10
+    return CN[s]
+
+
+def coverage(lines):
+    fm = {}
+    if lines and lines[0] == "---":
+        for l in lines[1:lines.index("---", 1)]:
+            m = re.match(r"^(\w+):\s*\"?([^\"]*)\"?\s*$", l)
+            if m:
+                fm[m.group(1)] = m.group(2)
+    if "pages" not in fm:
+        return []
+    want, skip = labelled(fm["pages"]), labelled(fm.get("pages_skipped", ""))
+    multi = len(want) > 1
+    scope = {}
+    if multi:
+        if "page_scope" not in fm:
+            return ["multi-PDF note: add page_scope, e.g. 'page_scope: \"1-2=W02; 3-6=W04\"'"]
+        for seg in fm["page_scope"].split(";"):
+            rng, _, lab = seg.partition("=")
+            for p in nums(rng):
+                scope[p] = lab.strip()
+    first = scope[min(scope)] if scope else ""
+    got, part, in_scope_box = {k: set() for k in want}, 0, False
+    for raw in lines[lines.index("---", 1) + 1 if lines and lines[0] == "---" else 0:]:
+        if REF_HEAD.match(raw):
+            break
+        p = part_no(raw)
+        if p is not None:
+            part = p
+        if re.match(r"^> \[!info\][-+]? (课程与范围|Course & scope)", raw):
+            in_scope_box = True
+        if in_scope_box and not raw.startswith(">"):
+            in_scope_box = False
+        if in_scope_box or raw.startswith("| [[#"):
+            continue  # scope box and reading-route table give whole ranges: a table of contents, not coverage
+        default = (scope.get(part) or (first if part == 0 else None)) if multi else ""
+        for pre, body in PCITE.findall(strip_code_math(raw)):
+            key = pre if pre in want else (None if pre else default)
+            if key is not None:
+                got[key].update(nums(body))
+    issues = []
+    for key, pages in want.items():
+        miss = sorted(pages - got[key] - skip.get(key, set()))
+        if miss:
+            where = f"{key} " if key else ""
+            issues.append(f"{where}pages never cited and not in pages_skipped: {', '.join(map(str, miss))}")
+    return issues
 
 
 def strip_code_math(line):
@@ -126,6 +216,7 @@ def main():
             issues.append(f"{i}: the text points at the picture on p.{n}; embed its screenshot (…-s{n:02d}.png)")
     if cited and not entries:
         issues.append("citations used but no '## 参考文献' / '## References' section")
+    issues.extend(coverage(lines))
     if not re.search(r"^> \[!abstract\][-+]? (一眼看懂|At a glance)", text, re.M):
         issues.append("no '> [!abstract] 一眼看懂' / 'At a glance' gist block before the first part")
 
