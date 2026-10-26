@@ -166,12 +166,11 @@ Callout labels ("Analogy", "Deep dive", "Pause", …) follow the note language (
 ## Quick start
 
 ```bash
-pip install pymupdf cli-anything-obsidian
+pip install pymupdf
 git clone https://github.com/RAIZ-Zzz/love-learning-anything ~/.claude/skills/lla
 ```
 
-Set `OBSIDIAN_VAULT` and `OBSIDIAN_API_KEY` (details below), open your vault in Obsidian, then in
-Claude Code:
+Set `OBSIDIAN_VAULT` (details below), then in Claude Code:
 
 ```text
 /lla AI6103 5 "slides/Lecture 4.pdf" --lang zh+en
@@ -186,19 +185,15 @@ The skill holds nothing machine-specific, so nothing in this repo needs editing.
 ### Required
 
 1. [Claude Code](https://claude.com/claude-code).
-2. Python 3 and the two packages the scripts use (both on PyPI):
+2. Python 3 and the package the scripts use:
    ```bash
-   pip install pymupdf cli-anything-obsidian
+   pip install pymupdf
    ```
    On macOS / Linux the command may be `python3` / `pip3`.
-3. [Obsidian](https://obsidian.md), with your vault open whenever the skill runs:
-   - install and enable the community plugin **Local REST API**;
-   - copy its API key into the environment variable `OBSIDIAN_API_KEY`.
-
-   Check: `cli-anything-obsidian --json vault list` prints your vault's top-level folders.
-4. The environment variable `OBSIDIAN_VAULT` = absolute path of that same vault folder
-   (attachments are copied there on disk; the publish script refuses to run if it is not the
-   vault Obsidian has open).
+3. [Obsidian](https://obsidian.md). No plugin is needed: notes are written to disk and Obsidian
+   picks them up by itself.
+4. The environment variable `OBSIDIAN_VAULT` = absolute path of your vault folder (the one that
+   holds `.obsidian/`).
 5. The skill itself:
    ```bash
    git clone https://github.com/RAIZ-Zzz/love-learning-anything ~/.claude/skills/lla
@@ -246,7 +241,7 @@ teach a section of an existing note.
 | `scripts/mindmap.py` | Optional course mind map: an outline with `@week\|heading@` link tokens becomes an inline `markmap` note; every heading link is checked |
 | `scripts/video_transcript.py` | YouTube / Bilibili video → plain text with [m:ss] stamps (platform subtitles, else speech recognition), for distilling how explainer videos teach a topic; `--stats` ranks candidates by views, then favourites |
 | `scripts/lint_note.py` | House-style check: slide pages as (p. N), every supplement cited author–year, citations match the reference list, every figure captioned, every example block has a result line |
-| `scripts/publish_note.py` | Writes the note and attachments into the vault through `cli-anything-obsidian`, refuses to overwrite edits made in Obsidian, and checks that every embed resolves |
+| `scripts/publish_note.py` | Writes the note and attachments into the vault folder on disk, refuses to overwrite edits made in Obsidian, and checks that every embed resolves |
 
 ### How animations stay accurate
 

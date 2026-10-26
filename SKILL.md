@@ -330,11 +330,12 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
 - `<skill>` below = this skill's base directory (shown when the skill loads; normally
   `~/.claude/skills/lla`). Fill it in literally, including inside generator scripts.
 - Vault: the environment variable `$OBSIDIAN_VAULT` (absolute path of the vault folder). If it is
-  unset, stop and ask the user to set it. Read/write notes **only** through `cli-anything-obsidian`
-  (the publish script does this); it talks to the vault open in Obsidian, and the publish script
-  checks that this is the same folder as `$OBSIDIAN_VAULT`.
-- Courses: the vault folders under `Lecture Notes/` (`cli-anything-obsidian --json vault list
-  "Lecture Notes"`). Where each course's slides live on this machine is in `<skill>/local.md`
+  unset, stop and ask the user to set it. Notes are plain files on disk: read them with the Read
+  tool, and write them **only** through the publish script (it checks the baseline, so edits made
+  in Obsidian meanwhile are never overwritten). Obsidian picks up changes on disk by itself; no
+  plugin or CLI is needed (dropped 2026-10-26, user's decision).
+- Courses: the vault folders under `Lecture Notes/` (list `$OBSIDIAN_VAULT/Lecture Notes`).
+  Where each course's slides live on this machine is in `<skill>/local.md`
   (git-ignored). If that file or the course's row is missing, ask the user for the slide folder,
   then create/extend `local.md`: a two-column table, `| Vault folder | Slides |`, one row per course.
   `local.md` also holds one `Reader:` line, the learner's background (see "The concrete reader"),
@@ -364,9 +365,9 @@ Talk in the user's language, whatever the note's language is. Walk the arc live:
    containing `/` → that path in the vault, as given. `WEEK n` in the steps below means this note,
    and the attachment prefix `week<N>[.<P>]` means the note name in lowercase kebab case
    (`special-relativity`; `WEEK 4.1` keeps the existing `week4.1`).
-2. `cli-anything-obsidian --json vault read "Lecture Notes/<course>/WEEK n"` (also try
-   `WEEK n.P`, and `vault list` on the course folder, since titles vary: `WEEK 2 - Linear Algebra`).
-3. If the note exists: save its exact `content` to `<work>/baseline.md`, and look at what it already
+2. Read `$OBSIDIAN_VAULT/Lecture Notes/<course>/WEEK n.md` (also try `WEEK n.P`, and list the
+   course folder, since titles vary: `WEEK 2 - Linear Algebra`).
+3. If the note exists: copy the file byte for byte to `<work>/baseline.md`, and look at what it already
    has. Empty or stub notes (a few lines, often `source: joplin`) → replace fully, but keep any text
    the user wrote themselves in an Original note `> [!quote]` block. Substantial notes → ask whether
    to rewrite, extend with missing pages, or fix specific parts; never silently discard content.
